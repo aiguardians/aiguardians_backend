@@ -19,3 +19,7 @@ Route::get('/test', function() {
     $course = App\User::find(133);
     return dd($course->student->groups);
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
