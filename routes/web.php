@@ -14,3 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/test', function() {
+    $course = App\User::find(133);
+    return dd($course->student->groups);
+});

@@ -28,6 +28,9 @@ class Teacher extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public function user() {
+        return $this->belongsTo('App\Models\User', 'user_id');
+    }
 
     /*
     |--------------------------------------------------------------------------

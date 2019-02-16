@@ -30,6 +30,9 @@ class Schedule extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public function course() {
+        return $this->belongsTo('App\Models\Course', 'course_id');
+    }
 
     /*
     |--------------------------------------------------------------------------

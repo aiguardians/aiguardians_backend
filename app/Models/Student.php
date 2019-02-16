@@ -19,7 +19,7 @@ class Student extends Model
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     // protected $guarded = ['id'];
-    protected $fillable = ['group_id', 'first_name', 'last_name'];
+    protected $fillable = ['user_id', 'first_name', 'last_name'];
     // protected $hidden = [];
     // protected $dates = [];
 
@@ -28,6 +28,9 @@ class Student extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public function groups() {
+        return $this->belongsToMany('App\Models\Group', 'student_group_pivot', 'student_id', 'group_id');
+    }
 
     /*
     |--------------------------------------------------------------------------

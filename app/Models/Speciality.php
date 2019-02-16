@@ -28,6 +28,9 @@ class Speciality extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public function groups() {
+        return $this->hasMany('App\Models\Group', 'speciality_id');
+    }
 
     /*
     |--------------------------------------------------------------------------

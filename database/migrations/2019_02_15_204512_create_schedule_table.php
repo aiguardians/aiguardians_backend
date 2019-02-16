@@ -17,9 +17,7 @@ class CreateScheduleTable extends Migration
             $table->increments('id');
 
             $table->unsignedInteger('course_id')->nullable();
-            $table->foreign('course_id')->references('id')
-                                        ->on('courses')
-                                        ->onDelete('cascade');
+            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
 
             $table->string('subject_type')->nullable();
             $table->string('room')->nullable();

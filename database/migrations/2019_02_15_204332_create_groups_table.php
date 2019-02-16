@@ -21,6 +21,7 @@ class CreateGroupsTable extends Migration
             $table->unsignedInteger('speciality_id')->nullable();
             $table->foreign('speciality_id')->references('id')->on('specialities')->onDelete('cascade');
 
+            $table->unsignedTinyInteger('type')->default(0);
             $table->unsignedInteger('tmp_group_id')->nullable();
             $table->timestamps();
         });
