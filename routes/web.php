@@ -11,8 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::middleware(['auth'])->group(function() {
+    Route::get('/', 'PageController@index');
+    Route::get('/chat', 'ChatController@index');
 });
 
 Route::get('/test', function() {
@@ -21,5 +23,3 @@ Route::get('/test', function() {
 });
 
 Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
