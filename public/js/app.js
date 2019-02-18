@@ -1777,6 +1777,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     console.log('Component mounted.');
@@ -36834,15 +36856,62 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container-fluid" }, [
-      _c("div", [
-        _c("div", { staticClass: "history" }, [
-          _c("p", [_vm._v("qweqwe")]),
+    return _c("div", { staticClass: "chat-wrapper" }, [
+      _c("div", { attrs: { id: "chat" } }, [
+        _c("h2", {}, [
+          _vm._v("Добрый день,"),
+          _c("br"),
           _vm._v(" "),
-          _c("p", [_vm._v("qweasdasdasd")])
+          _c("span", [_vm._v("Nurdaulet")])
         ]),
         _vm._v(" "),
-        _c("div", [_c("textarea", { staticClass: "form-control" })])
+        _c("div", { staticClass: "msg-box" }, [
+          _c("div", { staticClass: "msg msg-left" }, [
+            _c("span", [_vm._v("Как я могу помочь?")])
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "msg-box" }, [
+          _c("div", { staticClass: "msg msg-right" }, [
+            _c("span", [_vm._v("Уровень заинтересованности")])
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { attrs: { id: "bottom" } }, [
+        _c("div", { attrs: { id: "commands" } }, [
+          _c("span", { staticClass: "badge badge-pill command" }, [
+            _vm._v("Functions1")
+          ]),
+          _vm._v(" "),
+          _c("span", { staticClass: "badge badge-pill command" }, [
+            _vm._v("Functions2")
+          ]),
+          _vm._v(" "),
+          _c("span", { staticClass: "badge badge-pill command" }, [
+            _vm._v("Functions3")
+          ]),
+          _vm._v(" "),
+          _c("span", { staticClass: "badge badge-pill command" }, [
+            _vm._v("Functions3")
+          ]),
+          _vm._v(" "),
+          _c("span", { staticClass: "badge badge-pill command" }, [
+            _vm._v("Functions4")
+          ]),
+          _vm._v(" "),
+          _c("span", { staticClass: "badge badge-pill command" }, [
+            _vm._v("Functions5")
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { attrs: { id: "micro-box" } }, [
+          _c("canvas", { attrs: { id: "micro-background" } }),
+          _vm._v(" "),
+          _c("button", { attrs: { id: "micro" } }, [
+            _c("div", { attrs: { id: "logo" } })
+          ])
+        ])
       ])
     ])
   }
