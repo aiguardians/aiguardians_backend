@@ -10771,7 +10771,7 @@ body {
 }
 
 .login-form input {
-  padding: 0.4rem 1rem;
+  padding: 1.3rem 1.5rem;
 }
 
 .login-logo {
@@ -10781,6 +10781,8 @@ body {
 }
 
 .login-greeting {
+  padding: 5px;
+  margin-bottom: 10px;
   text-align: center;
 }
 

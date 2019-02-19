@@ -3,7 +3,7 @@
 @section('content')
     <div class="container-fluid">
         <div class="row justify-content-center">
-            <div class="col-8 col-sm-8 col-md-6 col-lg-4 login-form-wrapper">
+            <div class="col-10 col-sm-8 col-md-6 col-lg-4 login-form-wrapper">
                 <img class="login-logo" src="/img/logo_bg.png"/>
                 <h6 class="login-greeting">
                     Приятно видеть вас, снова!
