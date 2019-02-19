@@ -8,32 +8,133 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+
+
+body {
+    background-color: white;
+    overflow-x: auto;
+}
+
 .navbar-laravel {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
-body {
-    background-color: white;
+.chat-wrapper {
+    max-height: 100vh;
+
 }
 
-.login-form {
+#chat {
+    max-height: 100vh;
+    overflow-y: auto;
+    padding-bottom: 151px;
+}
+
+.msg-box {
+    padding: 5px;
+    display: inline-block;
+    width: 100%;
+}
+
+.msg {
+    padding: 5px 15px;
+    border: none;
+}
+
+.msg-left {
+    float: left;
+    background-color: #e8e8e8;
+    border-radius: 7px 7px 7px 0px;
+}
+
+.msg-right {
+    float: right;
+    background-color: #d1b7fc;
+    border-radius: 7px 7px 0px 7px;
+}
+
+#bottom {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    background-color: white;
+    z-index: 2;
+}
+
+#commands {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 20px 0;
+}
+
+.command {
+    border: 1px solid #d8c2ff;
+    font-weight: lighter;
+    padding: 8px 16px;
+}
+.command:not(:first-child) {
+    margin-left: 5px;
+}
+
+.command:first-child {
+    margin-left: 70px;
+}
+
+#micro-box {
+    height: 100%;
+    text-align: center;
+}
+
+
+#micro {
+    background-color: rgba(150, 140, 255, 0.7);
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+#micro-background {
+    position: absolute;
+    left:0;
+    height: 63px;
+    width: 100%;
+    background-color: transparent;
+    padding: 10px;
+    z-index: -1;
+}
+
+#logo {
+    background-image: url('/img/logo.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 43px;
+    width: 43px;
+}
+
+.login-form-wrapper {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-.login-logo {
-    width: 100%;
-    height: 150px;
-    background-image: url('/img/logo_bg.png');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
+.login-form .form-group {
+    margin-bottom: 0.6rem;
 }
 
-.login-btn {
+.login-form input {
+    padding: 0.4rem 1rem;
+}
+
+.login-logo {
     width: 100%;
-    background-color: red;
+    height: auto;
+    margin-bottom: 50px;
+}
+
+.login-greeting {
+    text-align: center;
 }
