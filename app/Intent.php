@@ -14,7 +14,7 @@ class Intent extends Model
         if (method_exists(get_called_class(), $intent)) {
             return self::$intent();
         }
-        return 'false';
+        return ['status' => 'ERROR'];
     }
 
     public static function GetSchedule() {
@@ -30,6 +30,7 @@ class Intent extends Model
             }
         }
         return [
+            'status' => 'OK',
             'component' => 'schedule',
             'content' => $schedule
         ];

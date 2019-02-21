@@ -40,7 +40,9 @@
                             if (result.privText && result.privText.length>0) {
                                 self.$parent.messages.push({content: result.privText, class: 'msg msg-right', component: 'default'});
                                 axios.get('/api/query', {params: {content: result.privText}}).then(response => {
-                                    self.$parent.messages.push(response.data.result);
+                                    if (response.data.result.status=='OK') {
+                                        self.$parent.messages.push(response.data.result);
+                                    }
                                     console.log(response);
                                 });
                             }

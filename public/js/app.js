@@ -1889,7 +1889,10 @@ var sdk = __webpack_require__(/*! microsoft-cognitiveservices-speech-sdk */ "./n
                 content: result.privText
               }
             }).then(function (response) {
-              self.$parent.messages.push(response.data.result);
+              if (response.data.result.status == 'OK') {
+                self.$parent.messages.push(response.data.result);
+              }
+
               console.log(response);
             });
           }

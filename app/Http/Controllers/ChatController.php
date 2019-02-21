@@ -18,7 +18,6 @@ class ChatController extends Controller
         $response = file_get_contents($url);
         return response()->json([
             'luis' => json_decode($response),
-            'message' => 'OK',
             'result' => Intent::proccess(json_decode($response))
         ]);
     }
