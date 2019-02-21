@@ -13,7 +13,7 @@
 
 
 Route::middleware(['auth'])->group(function() {
-    Route::get('/', 'PageController@index')->name('home');
+    Route::get('/', 'ChatController@index')->name('home');
 });
 Route::get('/chat', 'ChatController@index')->name('chat');
 
