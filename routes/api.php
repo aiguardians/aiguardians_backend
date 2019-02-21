@@ -17,8 +17,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/hello', function() {
-    return [
-        'message' => 'Hello World!',
-    ];
-});
+Route::get('/token', 'ChatController@token')->name('chat-speech-token');
+Route::get('/query', 'ChatController@query')->name('chat-query');

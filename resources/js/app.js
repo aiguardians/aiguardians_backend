@@ -1,4 +1,5 @@
 
+
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -21,6 +22,9 @@ window.Vue = require('vue');
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('chat', require('./components/chat.vue').default);
+Vue.component('micro-box', require('./components/micro-box.vue').default);
+Vue.component('schedule', require('./components/schedule.vue').default);
+Vue.component('message', require('./components/message.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

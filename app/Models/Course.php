@@ -28,6 +28,12 @@ class Course extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELATIONS
+    |--------------------------------------------------------------------------
+    */
     public function group() {
         return $this->belongsTo('App\Models\Group', 'group_id');
     }
@@ -44,12 +50,9 @@ class Course extends Model
         return $this->belongsTo('App\Models\Teacher', 'practice_teacher_id');
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | RELATIONS
-    |--------------------------------------------------------------------------
-    */
+    public function schedule() {
+        return $this->hasMany('App\Models\Schedule', 'course_id');
+    }
 
     /*
     |--------------------------------------------------------------------------

@@ -2,42 +2,37 @@
     <div class="chat-wrapper">
         <div id="chat">
             <h2 class="">Добрый день,<br/> <span>Nurdaulet</span></h2>
-            <!-- <img width="100%" src="/img/design/chat.png"/> -->
-
-            <div class="msg-box">
-                <div class="msg msg-left">
-                    <span>Как я могу помочь?</span>
-                </div>
-            </div>
-            <div class="msg-box">
-                <div class="msg msg-right">
-                    <span>Уровень заинтересованности</span>
-                </div>
+            <div class="msg-box" v-for="(message, index) in messages">
+                <message :messageId="index"></message>
             </div>
         </div>
         <div id="bottom">
             <div id="commands">
-                <span class="badge badge-pill command">Functions1</span>
-                <span class="badge badge-pill command">Functions2</span>
-                <span class="badge badge-pill command">Functions3</span>
-                <span class="badge badge-pill command">Functions3</span>
-                <span class="badge badge-pill command">Functions4</span>
-                <span class="badge badge-pill command">Functions5</span>
+                <span class="badge badge-pill command" v-for="item in commands">
+                    {{ item }}
+                </span>
             </div>
-            <div id="micro-box">
-                <canvas id="micro-background"></canvas>
-                <button id="micro">
-                    <div id="logo"></div>
-                </button>
-            </div>
+            <micro-box></micro-box>
         </div>
     </div>
 </template>
 
 <script>
     export default {
+        data: function() {
+            return {
+                messages: [
+                    {content: 'Как я могу помочь?', 'class': 'msg msg-left'},
+                    {content: 'Уровень заинтересованности', 'class': 'msg msg-right'},
+                ],
+                commands: [
+                    'Functions1', 'Functions1', 'Functions1', 'Functions1', 'Functions1'
+                ],
+            };
+        },
         mounted() {
             console.log('Component mounted.')
         }
+
     }
 </script>

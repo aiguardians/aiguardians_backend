@@ -39,7 +39,7 @@ class ScheduleParser extends Seeder
 
     private function saveCourses($courses, $group) {
         foreach($courses as $course_id=>$course) {
-            if (Course::where('tmp_course_id', $course_id)->exists()) {
+            if (Course::where('tmp_course_id', $course_id)->where('group_id', Group::where('tmp_group_id', $group['id'])->first()->id)->exists()) {
                 continue;
             }
             $data = new Course;
@@ -84,20 +84,18 @@ class ScheduleParser extends Seeder
                         }
                     }
                     $data = new Schedule;
-                    $data->course_id = Course::where('tmp_course_id', $item['subject_id'])->first()->id;
+                    $data->course_id = Course::where('tmp_course_id', $item['subject_id'])->where('group_id', Group::where('tmp_group_id', $group['id'])->first()->id)->first()->id;
                     $data->subject_type = $schedule['subject_types'][$item['subject_type_id']]['subject_type_en'];
                     $data->room = $room;
                     $data->day = $day;
-                    $data->time = [
-                        'start_time' => $schedule['times'][$item['time_id']]['start_time'],
-                        'end_time' => $schedule['times'][$item['time_id']]['end_time'],
-                    ];
+                    $data->start_time = $schedule['times'][$item['time_id']]['start_time'];
+                    $data->end_time = $schedule['times'][$item['time_id']]['end_time'];
                     $data->save();
                     $teacher = Teacher::where('tmp_user_id', $item['teacher_id'])->first();
                     $teacher->appointment = $schedule['appointments'][$item['appointment_id']]['appointment_en'];
                     $teacher->regalia = $schedule['regalias'][$item['regalia_id']]['regalia_en'];
                     $teacher->save();
-                    $course = Course::where('tmp_course_id', $item['subject_id'])->first();
+                    $course = Course::where('tmp_course_id', $item['subject_id'])->where('group_id', Group::where('tmp_group_id', $group['id'])->first()->id)->first();
                     if ($item['subject_type_id']==1) {
                         $course->lecture_teacher_id = $teacher->id;
                     }

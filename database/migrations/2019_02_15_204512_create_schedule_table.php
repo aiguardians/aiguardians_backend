@@ -22,7 +22,8 @@ class CreateScheduleTable extends Migration
             $table->string('subject_type')->nullable();
             $table->string('room')->nullable();
             $table->unsignedTinyInteger('day')->nullable();
-            $table->json('time')->nullable();
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->timestamps();
         });
     }

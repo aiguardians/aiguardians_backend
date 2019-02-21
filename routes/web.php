@@ -13,13 +13,16 @@
 
 
 Route::middleware(['auth'])->group(function() {
-    Route::get('/', 'PageController@index');
-    Route::get('/chat', 'ChatController@index');
+    Route::get('/', 'PageController@index')->name('home');
 });
+Route::get('/chat', 'ChatController@index')->name('chat');
 
 Route::get('/test', function() {
-    $course = App\User::find(133);
-    return dd($course->student->groups);
-});
+    // $r = App\Models\Schedule::first();
+    // return dd(\Carbon\Carbon::now(), new \Carbon\Carbon($r->start_time));
+    return dd(App\Models\Schedule::getNext(2));
+})->name('test');
+
+
 
 Auth::routes();
