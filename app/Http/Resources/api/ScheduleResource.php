@@ -21,8 +21,8 @@ class ScheduleResource extends JsonResource
             'room' => $this->room,
             'day' => $this->day,
             'time' => [
-                'start_time' => $this->start_time,
-                'end_time' => $this->end_time,
+                'start_time' => date('H:i', strtotime($this->start_time)),
+                'end_time' => date('H:i', strtotime($this->end_time)),
                 'current' => $this->isCurrent(),
                 'next' => $this->isNext()
             ],

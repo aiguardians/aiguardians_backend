@@ -47904,7 +47904,7 @@ var render = function() {
               "span",
               {
                 staticClass: "badge badge-pill command",
-                attrs: { command: item.value },
+                attrs: { role: "button", command: item.value },
                 on: { click: _vm.query }
               },
               [

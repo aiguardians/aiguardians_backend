@@ -13,9 +13,10 @@
 
 
 Route::middleware(['auth'])->group(function() {
-
 });
-Route::view('/', 'pages.welcome')->name('welcome');
+Route::get('/', 'ChatController@index')->name('welcome');
+
+Route::view('/welcome', 'pages.welcome')->name('welcome');
 Route::view('/home', 'pages.home')->name('home');
 Route::get('/chat', 'ChatController@index')->name('chat');
 

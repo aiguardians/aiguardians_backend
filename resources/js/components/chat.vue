@@ -8,7 +8,7 @@
         </div>
         <div id="bottom">
             <div id="commands">
-                <span class="badge badge-pill command" v-for="item in commands" :command="item.value" @click="query">
+                <span role="button" class="badge badge-pill command" v-for="item in commands" :command="item.value" @click="query">
                     {{ item.label }}
                 </span>
             </div>
