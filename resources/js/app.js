@@ -24,6 +24,7 @@ window.Vue = require('vue');
 Vue.component('chat', require('./components/chat.vue').default);
 Vue.component('micro-box', require('./components/micro-box.vue').default);
 Vue.component('schedule', require('./components/schedule.vue').default);
+Vue.component('schedule2', require('./components/schedule2.vue').default);
 Vue.component('message', require('./components/message.vue').default);
 
 /**

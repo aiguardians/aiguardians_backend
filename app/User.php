@@ -32,6 +32,16 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function getFirstNameAttribute() {
+        return $this->student?$this->student->first_name:$this->teacher->first_name;
+    }
+
+    public function getLastNameAttribute() {
+        return $this->student?$this->student->last_name:$this->teacher->last_name;
+    }
+
+
+
     public function teacher() {
         return $this->hasOne('App\Models\Teacher', 'user_id');
     }
@@ -39,5 +49,5 @@ class User extends Authenticatable
     public function student() {
         return $this->hasOne('App\Models\Student', 'user_id');
     }
-    
+
 }

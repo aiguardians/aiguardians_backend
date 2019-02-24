@@ -45,7 +45,7 @@
             };
         },
         mounted: function() {
-            console.log(this.schedule);
+
         },
     }
 </script>

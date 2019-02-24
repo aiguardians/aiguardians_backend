@@ -21,11 +21,6 @@
             axios.get('/api/token').then(response => {
                 var token = JSON.parse(atob(response.data.split(".")[1]));
                 this.speechConfig = sdk.SpeechConfig.fromAuthorizationToken(response.data, token.region);
-                // var self = this;
-                // axios.get('/api/query', {params: {content: 'give me the schedule'}}).then(response => {
-                //     self.$parent.messages.push(response.data.result);
-                // });
-
             });
         },
         methods: {
@@ -43,21 +38,20 @@
                                     if (response.data.result.status=='OK') {
                                         self.$parent.messages.push(response.data.result);
                                     }
-                                    console.log(response);
+                                    console.log(response.data);
                                 });
                             }
-                            console.log(result);
                             self.isRecognitionStarted = false;
                             recognizer.close();
                         },
                         function (err) {
                             self.isRecognitionStarted = false;
-                            console.log(err);
+                            alert(err);
                             recognizer.close();
                         }
                     );
                 } catch(err) {
-                    console.log(err);
+                    alert(err);
                 }
             },
             visualize: function() {

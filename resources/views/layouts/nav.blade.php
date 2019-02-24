@@ -19,12 +19,19 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
 </head>
 <body>
-    <div id="app">
-        @yield('header')
-        <main>
-            @yield('content')
-        </main>
-        @yield('footer')
+    <div id="app" style="">
+        <div class="container-fluid">
+            <div class="row" style="min-height: 100vh;">
+                <div class="d-flex">
+                    <div class="d-inline-flex">
+                        @include('partials.navigation')
+                    </div>
+                    <div class="d-inline-flex m-wrapper">
+                        @yield('content')
+                    </div>
+                </div>
+            </div>
+        </div>
         @yield('extra_scripts')
     </div>
 </body>

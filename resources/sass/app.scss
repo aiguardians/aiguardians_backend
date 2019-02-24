@@ -8,7 +8,9 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-
+html {
+    overflow: hidden;
+}
 
 body {
     background-color: white;
@@ -16,13 +18,13 @@ body {
 }
 
 .navbar-laravel {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .chat-wrapper {
     max-height: 100vh;
-
+    overflow: hidden;
 }
 
 #chat {
@@ -66,7 +68,7 @@ body {
     z-index: 2;
 }
 
-#commands {
+.commands {
     overflow-x: auto;
     white-space: nowrap;
     padding: 20px 0;
@@ -98,7 +100,7 @@ body {
 
 
 #micro {
-    background-color: rgba(150, 140, 255, 0.7);
+    background-color: #a774ff;
     border: none;
     outline: none;
     border-radius: 50%;
@@ -166,13 +168,17 @@ body {
 }
 
 .schedule-box {
-    width: 75vw;
+    width: 250px;
     padding: 5px 10px;
     margin: 0px 5px 10px 5px;
     border: 1px solid lightgrey;
     border-left: 8px solid lightgrey;
     border-radius: 7px;
     color: grey;
+}
+
+.schedule-box:hover {
+    box-shadow: 0px 0px 5px 1px lightgrey;
 }
 
 .schedule-course {
@@ -184,13 +190,19 @@ body {
 }
 
 .current-lesson {
-    border-left: 8px solid green;
+    border-left: 8px solid;
+    border-color: green;
 }
-
+.current-lesson:hover {
+    box-shadow: 0px 0px 5px 1px green;
+}
 .next-lesson {
-    border-left: 8px solid orange;
+    border-left: 8px solid;
+    border-color: orange;
 }
-
+.next-lesson:hover {
+    box-shadow: 0px 0px 5px 1px orange;
+}
 .w-brand {
     padding: 0px 15px;
 }
@@ -204,10 +216,10 @@ body {
     height: 40px;
     line-height: 40px;
     padding: 8px 60px;
-    border: 2px solid rgba(150, 140, 255, 1);
+    border: 2px solid #a774ff;
     border-radius: 5px;
     font-weight: bold;
-    color: rgba(150, 140, 255, 1);
+    color: #a774ff;
     transition: all .5s ease;
 }
 
@@ -217,7 +229,7 @@ body {
 
 .w-text-login {
     padding: 10px 50px;
-    background-color: rgba(150, 140, 255, 1);
+    background-color: #a774ff;
     font-weight: bold;
     color: white;
     border-radius: 5px;
@@ -225,7 +237,7 @@ body {
 }
 
 .w-text-login:hover {
-    background-color: rgba(100, 90, 180, 1);
+    background-color: #422574;
     color: white;
     text-decoration: none;
 }
@@ -292,4 +304,85 @@ body {
     .w-text {
         padding-top: 15vh;
     }
+}
+
+.n-nav {
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.n-brand {
+    text-align: center;
+}
+
+.n-brand img {
+    width: 120px;
+}
+
+.n-name {
+    padding: 5px 15px;
+    margin: 15px;
+    margin-left: 20px;
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid #a774ff;
+    font-weight: bold;
+    color: #a774ff;
+}
+
+.n-link {
+    padding: 5px 20px;
+}
+
+.n-link a {
+    color: grey;
+}
+
+.n-link a:hover {
+    text-decoration: none;
+    color: black;
+}
+
+.n-active {
+    color: black!important;
+}
+
+.n-bottom {
+    padding-bottom: 30px;
+}
+
+.m-wrapper {
+    border-left: 1px solid lightgrey;
+}
+
+.course-name-2 {
+    margin-right: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.s-schedule-box {
+    padding: 10px;
+}
+
+.s-top-nav {
+    padding: 20px 0px;
+}
+
+.s-right-content {
+    vertical-align: top;
+}
+
+.s-box {
+    white-space: nowrap;
+}
+
+.m-scroll-nav {
+    padding: 15px 0px;
+}
+
+.m-scroll-nav span:first-child {
+    margin-left: 0px!important;
 }

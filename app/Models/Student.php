@@ -32,6 +32,14 @@ class Student extends Model
         return $this->belongsToMany('App\Models\Group', 'student_group_pivot', 'student_id', 'group_id');
     }
 
+    public function user() {
+        return $this->belongsTo('App\User', 'user_id');
+    }
+
+    public function getGroupAttribute() {
+        return $this->groups[0];
+    }
+
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
