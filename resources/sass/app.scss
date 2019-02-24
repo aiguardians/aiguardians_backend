@@ -58,8 +58,11 @@ body {
     position: fixed;
     bottom: 0;
     width: 100%;
-    padding: 10px;
+    padding-bottom: 10px;
     background-color: white;
+    -webkit-box-shadow: 0px 0px 100px 20px rgba(255,255,255,1);
+    -moz-box-shadow: 0px 0px 100px 20px rgba(255,255,255,1);
+    box-shadow: 0px 0px 100px 20px rgba(255,255,255,1);
     z-index: 2;
 }
 
@@ -175,9 +178,112 @@ body {
 }
 
 .current-lesson {
-    border-left: 8px solid green;    
+    border-left: 8px solid green;
 }
 
 .next-lesson {
     border-left: 8px solid orange;
+}
+
+.w-brand {
+    padding: 0px 15px;
+}
+
+.w-logo {
+    height: 40px;
+    width: auto;
+}
+
+.w-login {
+    height: 40px;
+    line-height: 40px;
+    padding: 8px 60px;
+    border: 2px solid rgba(150, 140, 255, 1);
+    border-radius: 5px;
+    font-weight: bold;
+    color: rgba(150, 140, 255, 1);
+    transition: all .5s ease;
+}
+
+.w-text-login-box {
+    padding-top: 35px;
+}
+
+.w-text-login {
+    padding: 10px 50px;
+    background-color: rgba(150, 140, 255, 1);
+    font-weight: bold;
+    color: white;
+    border-radius: 5px;
+    transition: all .5s ease;
+}
+
+.w-text-login:hover {
+    background-color: rgba(100, 90, 180, 1);
+    color: white;
+    text-decoration: none;
+}
+
+.w-h1 {
+    font-size: 4em;
+    font-weight: bolder;
+}
+
+.w-h6 {
+    padding-top: 10px;
+}
+
+.w-login:hover {
+    text-decoration: none;
+    border-color: #1d68a7;
+}
+
+.w-text {
+    padding-top: 25vh;
+}
+
+.w-img {
+    margin-top: 100px;
+    width: 100%;
+    height: auto;
+    padding: 20px;
+}
+
+@media (max-width: 576px) {
+    .w-img {
+        padding: 0px;
+        margin-top: -30px;
+        padding-left: 20px;
+    }
+    .w-h1 {
+        font-size: 3em;
+    }
+    .w-text {
+        padding-top: 10vh;
+    }
+}
+
+@media (max-width: 360px) {
+    .w-img {
+        margin-top: -50px;
+        padding-left: 50px;
+    }
+    .w-h1 {
+        font-size: 2.5em;
+    }
+}
+
+@media (max-width: 340px) {
+    .w-text {
+        padding-top: 20vh;
+    }
+    .w-img {
+        margin-top: -20px;
+    }
+}
+
+@media (max-width: 320px) {
+    .w-text {
+        padding-top: 15vh;
+    }
 }

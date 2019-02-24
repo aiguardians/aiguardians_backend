@@ -21,7 +21,6 @@
 <body>
     <div id="app">
         @yield('header')
-        {{-- @include('partials.navigation') --}}
         <main class="py-4">
             @yield('content')
         </main>

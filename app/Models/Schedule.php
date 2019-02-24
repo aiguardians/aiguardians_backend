@@ -53,16 +53,29 @@ class Schedule extends Model
         $now = Carbon::now();
         $start = new Carbon($this->start_time);
         $end = new Carbon($this->end_time);
-        return ($now->diffInMinutes($start)<=50 && $now->diffInMinutes($end)<=50);
+        return (date('w')==$this->day && $now->diffInMinutes($start)<=50 && $now->diffInMinutes($end)<=50);
     }
 
     public function isNext() {
-        return false;
-        // return (self::getNext($this->course->group_id)->id==$this->id);
+        return (self::getNext($this->course->group_id)->id==$this->id);
     }
 
     public static function getNext($group_id) {
-        // return ;
+        $courses = \App\Models\Course::select('id')->where('group_id', $group_id)->pluck('id')->toArray();
+        $res = self::whereIn('course_id', $courses)
+                       ->orderByRaw("CONCAT(DATE_ADD(CURDATE(), INTERVAL (8 + day - IF(DAYOFWEEK(CURDATE())=1, 8, DAYOFWEEK(CURDATE()))) DAY), ' ', start_time) ASC")
+                       ->first();
+        return $res;
+    }
+
+    public static function getCurrent($group_id) {
+        $day = date('w');
+        $time = date('H:i:s');
+        $res = self::where('day', '=', $day)
+                     ->where('start_time', '<=', $time)
+                     ->where('end_time', '>=', $time)
+                     ->first();
+        return $res;
     }
 
     /*

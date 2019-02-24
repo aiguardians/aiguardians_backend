@@ -8,8 +8,8 @@
         </div>
         <div id="bottom">
             <div id="commands">
-                <span class="badge badge-pill command" v-for="item in commands">
-                    {{ item }}
+                <span class="badge badge-pill command" v-for="item in commands" :command="item.value" @click="query">
+                    {{ item.label }}
                 </span>
             </div>
             <micro-box></micro-box>
@@ -26,13 +26,28 @@
                     {content: 'Уровень заинтересованности', 'class': 'msg msg-right'},
                 ],
                 commands: [
-                    'Functions1', 'Functions1', 'Functions1', 'Functions1', 'Functions1'
+                    {label: 'Schedule', value: 'Give me the schedule'},
+                    {label: 'Function1', value: 'Function1'},
+                    {label: 'Function1', value: 'Function1'},
+                    {label: 'Function1', value: 'Function1'},
+                    {label: 'Function1', value: 'Function1'},
                 ],
             };
         },
         mounted() {
             console.log('Component mounted.')
-        }
+        },
+        methods: {
+            query: function(e) {
+                var command = e.target.getAttribute('command');
+                this.messages.push({content: command, class: 'msg msg-right', component: 'default'});
+                axios.get('/api/query', {params: {content: command}}).then(response => {
+                    if (response.data.result.status=='OK') {
+                        this.messages.push(response.data.result);
+                    }
+                });
+            }
+        },
 
     }
 </script>

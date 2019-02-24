@@ -1792,11 +1792,47 @@ __webpack_require__.r(__webpack_exports__);
         content: 'Уровень заинтересованности',
         'class': 'msg msg-right'
       }],
-      commands: ['Functions1', 'Functions1', 'Functions1', 'Functions1', 'Functions1']
+      commands: [{
+        label: 'Schedule',
+        value: 'Give me the schedule'
+      }, {
+        label: 'Function1',
+        value: 'Function1'
+      }, {
+        label: 'Function1',
+        value: 'Function1'
+      }, {
+        label: 'Function1',
+        value: 'Function1'
+      }, {
+        label: 'Function1',
+        value: 'Function1'
+      }]
     };
   },
   mounted: function mounted() {
     console.log('Component mounted.');
+  },
+  methods: {
+    query: function query(e) {
+      var _this = this;
+
+      var command = e.target.getAttribute('command');
+      this.messages.push({
+        content: command,
+        class: 'msg msg-right',
+        component: 'default'
+      });
+      axios.get('/api/query', {
+        params: {
+          content: command
+        }
+      }).then(function (response) {
+        if (response.data.result.status == 'OK') {
+          _this.messages.push(response.data.result);
+        }
+      });
+    }
   }
 });
 
@@ -47864,9 +47900,19 @@ var render = function() {
           "div",
           { attrs: { id: "commands" } },
           _vm._l(_vm.commands, function(item) {
-            return _c("span", { staticClass: "badge badge-pill command" }, [
-              _vm._v("\n                " + _vm._s(item) + "\n            ")
-            ])
+            return _c(
+              "span",
+              {
+                staticClass: "badge badge-pill command",
+                attrs: { command: item.value },
+                on: { click: _vm.query }
+              },
+              [
+                _vm._v(
+                  "\n                " + _vm._s(item.label) + "\n            "
+                )
+              ]
+            )
           }),
           0
         ),
@@ -60469,7 +60515,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!*****************************************************************************!*\
   !*** ./resources/js/components/schedule.vue?vue&type=template&id=55a93062& ***!
   \*****************************************************************************/
-/*! no static exports found */
+/*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
