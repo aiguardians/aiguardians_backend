@@ -50,10 +50,11 @@ class Schedule extends Model
     }
 
     public function isCurrent() {
-        $now = Carbon::now();
-        $start = new Carbon($this->start_time);
-        $end = new Carbon($this->end_time);
-        return (date('w')==$this->day && $now->diffInMinutes($start)<=50 && $now->diffInMinutes($end)<=50);
+        $current = self::getCurrent($this->course->group_id);
+        if ($current) {
+            return ($current->id==$this->id);
+        }
+        return false;
     }
 
     public function isNext() {
@@ -69,11 +70,11 @@ class Schedule extends Model
     }
 
     public static function getCurrent($group_id) {
-        $day = date('w');
-        $time = date('H:i:s');
-        $res = self::where('day', '=', $day)
-                     ->where('start_time', '<=', $time)
-                     ->where('end_time', '>=', $time)
+        // $day = date('w');
+        // $time = date('H:i:s');
+        $res = self::where('day', '=', 'DAY(NOW())')
+                     ->where('start_time', '<=', 'CURRENT_TIME()')
+                     ->where('end_time', '>=', 'CURRENT_TIME()')
                      ->first();
         return $res;
     }
