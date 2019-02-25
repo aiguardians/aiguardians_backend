@@ -14,6 +14,8 @@ Route::get('/test', function() {
     return dd(\App\Models\Schedule::getNext(3));
 })->name('test');
 
+Route::view('/test/video', 'pages.video')->name('test');
+
 
 Route::middleware(['auth'])->group(function() {
     Route::get('/home/{page?}', 'PageController@home')->name('home');

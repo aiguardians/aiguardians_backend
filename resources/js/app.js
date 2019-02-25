@@ -26,6 +26,7 @@ Vue.component('micro-box', require('./components/micro-box.vue').default);
 Vue.component('schedule', require('./components/schedule.vue').default);
 Vue.component('schedule2', require('./components/schedule2.vue').default);
 Vue.component('message', require('./components/message.vue').default);
+Vue.component('testvideostream', require('./components/testvideostream.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
