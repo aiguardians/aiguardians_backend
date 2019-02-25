@@ -56,7 +56,7 @@
                 }
             },
             visualize: function() {
-                var audioCtx = new (window.AudioContext || webkitAudioContext)();
+                var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 var self = this;
                 navigator.getUserMedia({audio:true},
                     function(stream) {

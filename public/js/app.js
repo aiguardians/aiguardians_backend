@@ -1944,7 +1944,7 @@ var sdk = __webpack_require__(/*! microsoft-cognitiveservices-speech-sdk */ "./n
       }
     },
     visualize: function visualize() {
-      var audioCtx = new (window.AudioContext || webkitAudioContext)();
+      var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       var self = this;
       navigator.getUserMedia({
         audio: true
