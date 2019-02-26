@@ -67,7 +67,7 @@
                 var self = this;
                 window.setInterval(function() {
                     self.takeScreenshot();
-                }, 5000);
+                }, 7000);
             },
             drawVideo: function() {
                 window.requestAnimationFrame(this.drawVideo);
@@ -93,6 +93,9 @@
                         .done(function(data) {
                             if (data.isIdentical) {
                                 console.log('identical');
+                                console.log(self)
+                                console.log(i)
+                                console.log(self.students);
                                 self.students[i].cnt++;
                                 self.students[i].coords = faces[j].faceRectangle;
                                 self.faces[j].checked = true;
