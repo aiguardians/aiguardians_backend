@@ -6,7 +6,6 @@
 </template>
 
 <script>
-    import { saveAs } from 'file-saver';
     export default {
         props: ['groupid'],
         data: function() {
@@ -74,7 +73,13 @@
                 this.ctx.beginPath();
                 this.ctx.drawImage(this.video, 0, 0);
                 var self = this;
+                this.students.forEach(function(f) {
+                    self.ctx.strokeStyle = "rgba(0, 255, 0, 0.7)";
+                    self.ctx.rect(f.coords.left, f.coords.top, f.coords.width, f.coords.height);
+                    self.ctx.stroke();
+                });
                 this.faces.forEach(function(f) {
+                    if (f.checked) return;
                     self.ctx.strokeStyle = "rgba(255, 0, 0, 0.7)";
                     self.ctx.rect(f.left, f.top, f.width, f.height);
                     self.ctx.stroke();
@@ -89,16 +94,15 @@
                         if (this.faces[j].checked) {
                             break;
                         }
+                        var s_id = i;
+                        var f_id = j;
                         this.sendDetectionRequest('verify', JSON.stringify({faceId1: this.students[i].faceId, faceId2: faces[j].faceId}), 'json', {})
                         .done(function(data) {
                             if (data.isIdentical) {
                                 console.log('identical');
-                                console.log(self)
-                                console.log(i)
-                                console.log(self.students);
-                                self.students[i].cnt++;
-                                self.students[i].coords = faces[j].faceRectangle;
-                                self.faces[j].checked = true;
+                                self.students[s_id].cnt++;
+                                self.students[s_id].coords = faces[f_id].faceRectangle;
+                                self.faces[f_id].checked = true;
                             }
                             console.log(data);
                         }).fail(function(err) {
