@@ -15,6 +15,7 @@ class ScheduleResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'group' => new \App\Http\Resources\api\GroupResource($this->course->group),
             'course' => new \App\Http\Resources\api\CourseResource($this->course),
             'teacher' => new \App\Http\Resources\api\TeacherResource($this->getTeacher()),
             'subject_type' => $this->subject_type,

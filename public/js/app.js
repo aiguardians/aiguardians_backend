@@ -1816,21 +1816,23 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     query: function query(e) {
+      var command = e.target.getAttribute('command');
+      this.getResult(command);
+    },
+    getResult: function getResult(command) {
       var _this = this;
 
-      var command = e.target.getAttribute('command');
       this.messages.push({
         content: command,
         class: 'msg msg-right',
         component: 'default'
       });
       this.$nextTick(function () {
-        console.log(document.getElementById("chat").lastChild);
         document.getElementById("chat").lastChild.scrollIntoView({
           behavior: 'smooth'
         });
       });
-      axios.get('/api/query', {
+      axios.get('/query', {
         params: {
           content: command
         }
@@ -1919,28 +1921,7 @@ var sdk = __webpack_require__(/*! microsoft-cognitiveservices-speech-sdk */ "./n
         var recognizer = new sdk.SpeechRecognizer(this.speechConfig, this.audioConfig);
         recognizer.recognizeOnceAsync(function (result) {
           if (result.privText && result.privText.length > 0) {
-            self.$parent.messages.push({
-              content: result.privText,
-              class: 'msg msg-right',
-              component: 'default'
-            });
-            self.$nextTick(function () {
-              console.log(document.getElementById("chat").lastChild);
-              document.getElementById("chat").lastChild.scrollIntoView({
-                behavior: 'smooth'
-              });
-            });
-            axios.get('/api/query', {
-              params: {
-                content: result.privText
-              }
-            }).then(function (response) {
-              if (response.data.result.status == 'OK') {
-                self.$parent.messages.push(response.data.result);
-              }
-
-              console.log(response.data);
-            });
+            self.$parent.getResult(result.privText);
           }
 
           self.isRecognitionStarted = false;
@@ -2068,8 +2049,7 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         name: 'Saturday'
       }],
-      group: this.$parent.message.content.group,
-      schedule: this.$parent.message.content.schedule
+      schedule: this.$parent.message.content
     };
   },
   mounted: function mounted() {}
@@ -2213,11 +2193,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     detectStudent: function detectStudent(i) {
       var self = this;
-      this.sendDetectionRequest(JSON.stringify({
+      this.sendDetectionRequest("detect", JSON.stringify({
         "url": window.location.origin + self.students[i].image
       }), 'json').done(function (data) {
         console.log(data);
         self.students[i].faceId = data[0].faceId;
+        self.students[i].cnt = 0;
       }).fail(function () {
         console.log("error");
       });
@@ -2253,21 +2234,41 @@ __webpack_require__.r(__webpack_exports__);
         self.ctx.stroke();
       });
     },
-    verifyFaces: function verifyFaces(data) {
-      console.log('Detected: ' + data.length);
-      this.faces = [];
+    verifyFaces: function verifyFaces(faces) {
+      console.log('Detected: ' + faces.length);
       var self = this;
-      data.forEach(function (face) {
-        self.drawFaceRectangle(face.faceRectangle);
+      this.faces = faces.map(function (f) {
+        return f.faceRectangle;
       });
-    },
-    drawFaceRectangle: function drawFaceRectangle(f) {
-      this.faces.push(f);
+
+      for (var i = 0; i < this.students.length; ++i) {
+        for (var j = 0; j < faces.length; ++j) {
+          if (this.faces[j].checked) {
+            break;
+          }
+
+          this.sendDetectionRequest('verify', {
+            faceId1: this.students[i].faceId,
+            faceId2: faces[j].faceId
+          }, 'json', {}).done(function (data) {
+            if (data.isIdentical) {
+              console.log('identical');
+              self.students[i].cnt++;
+              self.students[i].coords = faces[j].faceRectangle;
+              self.faces[j].checked = true;
+            }
+
+            console.log(data);
+          }).fail(function (err) {
+            console.log(err);
+          });
+        }
+      }
     },
     takeScreenshot: function takeScreenshot() {
       console.log('screen shot');
       var self = this;
-      this.sendDetectionRequest(this.makeblob(this.ctx.canvas.toDataURL()), 'octet-stream').done(function (data) {
+      this.sendDetectionRequest("detect", this.makeblob(this.ctx.canvas.toDataURL()), 'octet-stream').done(function (data) {
         self.verifyFaces(data);
       }).fail(function () {
         console.log("error");
@@ -2299,13 +2300,13 @@ __webpack_require__.r(__webpack_exports__);
         type: contentType
       });
     },
-    sendDetectionRequest: function sendDetectionRequest(data, contentType) {
-      var params = {
-        "returnFaceId": "true",
-        "returnFaceLandmarks": "false"
+    sendDetectionRequest: function sendDetectionRequest(action, data, contentType) {
+      var params = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {
+        returnFaceId: "true",
+        returnFaceLandmarks: "false"
       };
       return $.ajax({
-        url: "https://westus.api.cognitive.microsoft.com/face/v1.0/detect?" + $.param(params),
+        url: "https://westus.api.cognitive.microsoft.com/face/v1.0/" + action + "?" + $.param(params),
         beforeSend: function beforeSend(xhrObj) {
           xhrObj.setRequestHeader("Content-Type", "application/" + contentType);
           xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "200fd87c86524526aa0df29ccaa8badd");
@@ -48293,15 +48294,15 @@ var render = function() {
             _c("h5", [_vm._v(_vm._s(day.name))])
           ]),
           _vm._v(" "),
-          _vm._l(_vm.schedule[index + 1], function(item) {
+          _vm._l(_vm.schedule[index + 1], function(items, start_time) {
             return _c(
               "div",
               {
                 class: [
                   "schedule-box",
                   {
-                    "current-lesson": item.time.current,
-                    "next-lesson": item.time.next
+                    "current-lesson": items[0].time.current,
+                    "next-lesson": items[0].time.next
                   }
                 ]
               },
@@ -48314,18 +48315,25 @@ var render = function() {
                   },
                   [
                     _c("span", { staticClass: "course-name" }, [
-                      _vm._v(_vm._s(item.course.name))
+                      _vm._v(_vm._s(items[0].course.name))
                     ]),
                     _vm._v(" "),
-                    _c("span", [_vm._v(_vm._s(item.time.start_time))])
+                    _c("span", [_vm._v(_vm._s(start_time))])
                   ]
                 ),
                 _vm._v(" "),
-                _c("div", { staticClass: "d-flex justify-content-between" }, [
-                  _c("span", [_vm._v(_vm._s(_vm.group.name))]),
-                  _vm._v(" "),
-                  _c("span", [_vm._v(_vm._s(item.subject_type))])
-                ])
+                _c(
+                  "div",
+                  { staticClass: "d-flex justify-content-between" },
+                  [
+                    _vm._l(items, function(item) {
+                      return _c("span", [_vm._v(_vm._s(item.group.name))])
+                    }),
+                    _vm._v(" "),
+                    _c("span", [_vm._v(_vm._s(items[0].subject_type))])
+                  ],
+                  2
+                )
               ]
             )
           })

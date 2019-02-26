@@ -41,12 +41,14 @@
         methods: {
             query: function(e) {
                 var command = e.target.getAttribute('command');
+                this.getResult(command);
+            },
+            getResult: function(command) {
                 this.messages.push({content: command, class: 'msg msg-right', component: 'default'});
                 this.$nextTick(function () {
-                    console.log(document.getElementById("chat").lastChild);
                     document.getElementById("chat").lastChild.scrollIntoView({behavior: 'smooth'});
                 });
-                axios.get('/api/query', {params: {content: command}}).then(response => {
+                axios.get('/query', {params: {content: command}}).then(response => {
                     if (response.data.result.status=='OK') {
                         this.messages.push(response.data.result);
                     }

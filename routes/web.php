@@ -11,7 +11,7 @@
 |
 */
 Route::get('/test', function() {
-    return "asd";
+    return dd($courses);
 })->name('test');
 
 
@@ -21,6 +21,7 @@ Route::middleware(['auth'])->group(function() {
     Route::view('/test/video', 'pages.video')->name('test');
     Route::get('/home/{page?}', 'PageController@home')->name('home');
     Route::get('/chat', 'ChatController@index')->name('chat');
+    Route::get('/query', 'ChatController@query')->name('chat-query');
 });
 
 Route::view('/welcome', 'pages.welcome')->name('welcome');

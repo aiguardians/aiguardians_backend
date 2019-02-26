@@ -36,6 +36,19 @@ class Student extends Model
         });
     }
 
+    public function getSchedule() {
+        $course_ids = Course::select('id')->where('group_id', $this->groups[0]->id)->pluck('id')->toArray();
+        $items = Schedule::whereIn('course_id', $course_ids)->orderBy('day', 'ASC')->orderBy('start_time', 'ASC')->orderBy('course_id', 'ASC')->get();
+        foreach($items as $item) {
+            $schedule[$item->day][$item->start_time][]=new \App\Http\Resources\api\ScheduleResource($item);
+        }
+        return [
+            'status' => 'OK',
+            'component' => 'schedule',
+            'content' => $schedule
+        ];
+    }
+
 
     /*
     |--------------------------------------------------------------------------

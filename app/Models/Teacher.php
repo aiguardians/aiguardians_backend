@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\CrudTrait;
-
+use App\Models\Course;
 class Teacher extends Model
 {
     use CrudTrait;
@@ -34,6 +34,23 @@ class Teacher extends Model
         static::deleting(function($obj) {
             \Storage::disk('uploads')->delete(str_replacce('/uploads', '', $obj->image));
         });
+    }
+
+    public function getSchedule() {
+        $course_ids = \App\Models\Course::select('id')->where('lecture_teacher_id', $this->id)
+                                                      ->orWhere('lab_teacher_id', $this->id)
+                                                      ->orWhere('practice_teacher_id', $this->id)
+                                                      ->pluck('id')
+                                                      ->toArray();
+        $items = Schedule::whereIn('course_id', $course_ids)->orderBy('day', 'ASC')->orderBy('start_time', 'ASC')->orderBy('course_id', 'ASC')->get();
+        foreach($items as $item) {
+            $schedule[$item->day][$item->start_time][]=new \App\Http\Resources\api\ScheduleResource($item);
+        }
+        return [
+            'status' => 'OK',
+            'component' => 'schedule',
+            'content' => $schedule
+        ];
     }
 
     /*

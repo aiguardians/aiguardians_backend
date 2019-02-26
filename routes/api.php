@@ -18,7 +18,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/token', 'ChatController@token')->name('chat-speech-token');
-Route::get('/query', 'ChatController@query')->name('chat-query');
 
 Route::get('/group/{id}', 'GroupController@index');
 Route::get('/group/{id}/schedule', 'ScheduleController@group');

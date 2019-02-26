@@ -41,10 +41,11 @@
             },
             detectStudent: function(i) {
                 var self = this;
-                this.sendDetectionRequest(JSON.stringify({"url": window.location.origin+self.students[i].image}), 'json')
+                this.sendDetectionRequest("detect", JSON.stringify({"url": window.location.origin+self.students[i].image}), 'json')
                 .done(function(data) {
                     console.log(data);
                     self.students[i].faceId = data[0].faceId;
+                    self.students[i].cnt = 0;
                 }).fail(function() {
                     console.log("error");
                 });
@@ -79,22 +80,34 @@
                     self.ctx.stroke();
                 });
             },
-            verifyFaces: function(data) {
-                console.log('Detected: ' + data.length);
-                this.faces = [];
-
+            verifyFaces: function(faces) {
+                console.log('Detected: ' + faces.length);
                 var self = this;
-                data.forEach(function(face) {
-                    self.drawFaceRectangle(face.faceRectangle);
-                });
-            },
-            drawFaceRectangle: function(f) {
-                this.faces.push(f);
+                this.faces = faces.map(f => { return f.faceRectangle; });
+                for(var i = 0;i<this.students.length;++i) {
+                    for(var j = 0;j<faces.length;++j) {
+                        if (this.faces[j].checked) {
+                            break;
+                        }
+                        this.sendDetectionRequest('verify', {faceId1: this.students[i].faceId, faceId2: faces[j].faceId}, 'json', {})
+                        .done(function(data) {
+                            if (data.isIdentical) {
+                                console.log('identical');
+                                self.students[i].cnt++;
+                                self.students[i].coords = faces[j].faceRectangle;
+                                self.faces[j].checked = true;
+                            }
+                            console.log(data);
+                        }).fail(function(err) {
+                            console.log(err);
+                        });
+                    }
+                }
             },
             takeScreenshot: function() {
                 console.log('screen shot');
                 var self = this;
-                this.sendDetectionRequest(this.makeblob(this.ctx.canvas.toDataURL()), 'octet-stream')
+                this.sendDetectionRequest("detect", this.makeblob(this.ctx.canvas.toDataURL()), 'octet-stream')
                 .done(function(data) {
                     self.verifyFaces(data);
                 }).fail(function() {
@@ -122,13 +135,9 @@
 
                 return new Blob([uInt8Array], { type: contentType });
             },
-            sendDetectionRequest: function(data, contentType) {
-                var params = {
-                    "returnFaceId": "true",
-                    "returnFaceLandmarks": "false",
-                };
+            sendDetectionRequest: function(action, data, contentType, params={returnFaceId: "true", returnFaceLandmarks: "false"}) {
                 return $.ajax({
-                    url: "https://westus.api.cognitive.microsoft.com/face/v1.0/detect?" + $.param(params),
+                    url: "https://westus.api.cognitive.microsoft.com/face/v1.0/"+action+"?" + $.param(params),
                     beforeSend: function(xhrObj) {
                         xhrObj.setRequestHeader("Content-Type","application/"+contentType);
                         xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","200fd87c86524526aa0df29ccaa8badd");

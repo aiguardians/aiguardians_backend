@@ -33,17 +33,7 @@
                     recognizer.recognizeOnceAsync(
                         function (result) {
                             if (result.privText && result.privText.length>0) {
-                                self.$parent.messages.push({content: result.privText, class: 'msg msg-right', component: 'default'});
-                                self.$nextTick(function () {
-                                    console.log(document.getElementById("chat").lastChild);
-                                    document.getElementById("chat").lastChild.scrollIntoView({behavior: 'smooth'});
-                                });
-                                axios.get('/api/query', {params: {content: result.privText}}).then(response => {
-                                    if (response.data.result.status=='OK') {
-                                        self.$parent.messages.push(response.data.result);
-                                    }
-                                    console.log(response.data);
-                                });
+                                self.$parent.getResult(result.privText);
                             }
                             self.isRecognitionStarted = false;
                             recognizer.close();

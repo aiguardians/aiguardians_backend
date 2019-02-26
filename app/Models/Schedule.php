@@ -65,6 +65,7 @@ class Schedule extends Model
         $courses = \App\Models\Course::select('id')->where('group_id', $group_id)->pluck('id')->toArray();
         $res = self::whereIn('course_id', $courses)
                        ->orderByRaw("IF(day<DAYOFWEEK(CURDATE())-1 OR (day=DAYOFWEEK(CURDATE())-1 AND CURTIME()>=start_time), CONCAT(DATE_ADD(CURDATE(), INTERVAL (8 + day - IF(DAYOFWEEK(CURDATE())=1, 8, DAYOFWEEK(CURDATE()))) DAY), ' ', start_time), CONCAT(DATE_ADD(CURDATE(), INTERVAL (day+1 - DAYOFWEEK(CURDATE())) DAY), ' ', start_time)) ASC")
+                       ->orderBy('course_id', 'ASC')
                        ->first();
         return $res;
     }
