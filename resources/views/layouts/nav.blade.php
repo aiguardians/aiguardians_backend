@@ -21,14 +21,12 @@
 <body>
     <div id="app" style="">
         <div class="container-fluid">
-            <div class="row" style="min-height: 100vh;">
-                <div class="d-flex">
-                    <div class="d-inline-flex">
-                        @include('partials.navigation')
-                    </div>
-                    <div class="d-inline-flex m-wrapper">
-                        @yield('content')
-                    </div>
+            <div class="row">
+                <div class="left">
+                    @include('partials.navigation')
+                </div>
+                <div class="right">
+                    @yield('content')
                 </div>
             </div>
         </div>

@@ -340,7 +340,7 @@ body {
 }
 
 .n-brand {
-    padding: 20px 15px;
+    margin: 20px 0px;
 }
 
 .n-brand img {
@@ -420,4 +420,51 @@ body {
 
 .n-link span {
     display: contents;
+}
+
+
+.left{
+	width: 60px;
+	height: 100%;
+	background: white;
+    white-space: nowrap;
+    transition: width 0.5s ;
+    position: fixed;
+    z-index: 9999;
+    border-right: 1px solid lightgrey;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.left ul{
+	padding: 0;
+	list-style-type: none;
+	text-align: left;
+}
+.left li {
+	width: auto;
+	height: 60px;
+	line-height: 50px;
+	padding-left: 18px;
+}
+
+.left:hover {
+    width: 250px;
+}
+
+.left .item-menu {
+    height:50px;
+    overflow:hidden;
+    color: grey;
+}
+.left a{
+	color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+span.menu{
+	padding-left: 17px;
+}
+.right {
+    margin-left: 60px;
 }
