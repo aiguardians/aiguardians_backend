@@ -2247,10 +2247,10 @@ __webpack_require__.r(__webpack_exports__);
             break;
           }
 
-          this.sendDetectionRequest('verify', {
+          this.sendDetectionRequest('verify', JSON.stringify({
             faceId1: this.students[i].faceId,
             faceId2: faces[j].faceId
-          }, 'json', {}).done(function (data) {
+          }), 'json', {}).done(function (data) {
             if (data.isIdentical) {
               console.log('identical');
               self.students[i].cnt++;

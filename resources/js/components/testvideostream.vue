@@ -89,7 +89,7 @@
                         if (this.faces[j].checked) {
                             break;
                         }
-                        this.sendDetectionRequest('verify', {faceId1: this.students[i].faceId, faceId2: faces[j].faceId}, 'json', {})
+                        this.sendDetectionRequest('verify', JSON.stringify({faceId1: this.students[i].faceId, faceId2: faces[j].faceId}), 'json', {})
                         .done(function(data) {
                             if (data.isIdentical) {
                                 console.log('identical');
