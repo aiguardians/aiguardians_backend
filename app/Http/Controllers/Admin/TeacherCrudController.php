@@ -33,8 +33,67 @@ class TeacherCrudController extends CrudController
         |--------------------------------------------------------------------------
         */
 
-        // TODO: remove setFromDb() and manually define Fields and Columns
-        $this->crud->setFromDb();
+        $this->crud->addColumns([
+            [
+                'name' => 'user_id',
+                'label' => 'User',
+            ],
+            [
+                'name' => 'first_name',
+                'lable' => 'First name',
+            ],
+            [
+                'name' => 'last_name',
+                'label' => 'Last name',
+            ],
+            [
+                'name' => 'image',
+                'label' => 'image',
+                'type' => 'image',
+            ],
+            [
+                'name' => 'appointment',
+                'label' => 'appointment',
+            ],
+            [
+                'name' => 'regalia',
+                'label' => 'regalia',
+            ],
+        ]);
+
+        $this->crud->addFields([
+            [
+                'name' => 'user_id',
+                'label' => 'User',
+                'type' => 'select',
+                'model' => 'App\User',
+                'entity' => 'user',
+                'attribute' => 'name',
+            ],
+            [
+                'name' => 'first_name',
+                'label' => 'First name',
+            ],
+            [
+                'name' => 'last_name',
+                'label' => 'Last name',
+            ],
+            [
+                'name' => 'appointment',
+                'label' => 'appointment',
+            ],
+            [
+                'name' => 'regalia',
+                'label' => 'regalia',
+            ],
+            [
+                'name' => 'image',
+                'label' => 'image',
+                'type' => 'image',
+                'upload' => true,
+                'crop' => false,
+            ],
+        ]);
 
         // add asterisk for fields that are required in TeacherRequest
         $this->crud->setRequiredFields(StoreRequest::class, 'create');
