@@ -20,11 +20,11 @@ Route::get('/test', function() {
 Route::middleware(['auth'])->group(function() {
     Route::view('/test/video', 'pages.video')->name('test');
     Route::get('/home/{page?}', 'PageController@home')->name('home');
+    Route::get('/chat', 'ChatController@index')->name('chat');
 });
 
 Route::view('/welcome', 'pages.welcome')->name('welcome');
+Route::view('/', 'pages.welcome')->name('welcome');
 
-Route::get('/', 'ChatController@index')->name('welcome');
-Route::get('/chat', 'ChatController@index')->name('chat');
 
 Auth::routes();

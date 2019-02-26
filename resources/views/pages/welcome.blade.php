@@ -15,13 +15,13 @@
         </div>
         <div class="row">
             <div class="col-sm-6 w-text">
-                <h1 class="w-h1">Ваш личный<br/>помощник</h1>
-                <h6 class="w-h6">Убейте рутину и делайте только важные вещи<h6>
+                <h1 class="w-h1">Your personal<br/>assistant</h1>
+                <h6 class="w-h6">Kill routine and do important things!<h6>
                 <div class="w-text-login-box">
                     <a class="w-text-login" href="/login">Login</a>
                 </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-6" style="z-index: -1;">
                 <img class="w-img" src="/img/w_img.png"/>
             </div>
         </div>
