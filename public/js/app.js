@@ -1907,29 +1907,36 @@ var sdk = __webpack_require__(/*! microsoft-cognitiveservices-speech-sdk */ "./n
     activate: function activate() {
       try {
         this.isRecognitionStarted = true;
-        this.visualize(); // var self = this;
-        // var recognizer = new sdk.SpeechRecognizer(this.speechConfig, this.audioConfig);
-        // recognizer.recognizeOnceAsync(
-        //     function (result) {
-        //         alert(result.privText);
-        //         if (result.privText && result.privText.length>0) {
-        //             self.$parent.messages.push({content: result.privText, class: 'msg msg-right', component: 'default'});
-        //             axios.get('/api/query', {params: {content: result.privText}}).then(response => {
-        //                 if (response.data.result.status=='OK') {
-        //                     self.$parent.messages.push(response.data.result);
-        //                 }
-        //                 console.log(response.data);
-        //             });
-        //         }
-        //         self.isRecognitionStarted = false;
-        //         recognizer.close();
-        //     },
-        //     function (err) {
-        //         self.isRecognitionStarted = false;
-        //         alert(err);
-        //         recognizer.close();
-        //     }
-        // );
+        this.visualize();
+        var self = this;
+        var recognizer = new sdk.SpeechRecognizer(this.speechConfig, this.audioConfig);
+        recognizer.recognizeOnceAsync(function (result) {
+          if (result.privText && result.privText.length > 0) {
+            self.$parent.messages.push({
+              content: result.privText,
+              class: 'msg msg-right',
+              component: 'default'
+            });
+            axios.get('/api/query', {
+              params: {
+                content: result.privText
+              }
+            }).then(function (response) {
+              if (response.data.result.status == 'OK') {
+                self.$parent.messages.push(response.data.result);
+              }
+
+              console.log(response.data);
+            });
+          }
+
+          self.isRecognitionStarted = false;
+          recognizer.close();
+        }, function (err) {
+          self.isRecognitionStarted = false;
+          alert(err);
+          recognizer.close();
+        });
       } catch (err) {
         alert(err);
       }
