@@ -1941,8 +1941,7 @@ var sdk = __webpack_require__(/*! microsoft-cognitiveservices-speech-sdk */ "./n
       navigator.getUserMedia({
         audio: true
       }, function (stream) {
-        animate(stream);
-
+        // animate(stream);
         function animate(stream) {
           var canvas = document.getElementById('micro-background');
           var ctx = canvas.getContext('2d');
@@ -2163,7 +2162,8 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       video: null,
-      ctx: null
+      ctx: null,
+      faces: []
     };
   },
   mounted: function mounted() {
@@ -2193,6 +2193,10 @@ __webpack_require__.r(__webpack_exports__);
     drawVideo: function drawVideo() {
       window.requestAnimationFrame(this.drawVideo);
       this.ctx.drawImage(this.video, 0, 0);
+      this.faces.forEach(function (f) {
+        this.ctx.rect(f.left, f.top, f.width, f.height);
+        this.ctx.stroke();
+      });
     },
     makeblob: function makeblob(dataURL) {
       var BASE64_MARKER = ';base64,';
@@ -2220,14 +2224,24 @@ __webpack_require__.r(__webpack_exports__);
         type: contentType
       });
     },
+    verifyFaces: function verifyFaces(data) {
+      var self = this;
+      data.forEach(function (face) {
+        self.drawFaceRectangle(face.faceRectangle);
+      });
+    },
+    drawFaceRectangle: function drawFaceRectangle(f) {
+      this.faces.push(f);
+    },
     takeScreenshot: function takeScreenshot() {
       var img = document.querySelector('#screenshot');
       var data = this.ctx.canvas.toDataURL();
       img.src = data;
       var params = {
         "returnFaceId": "true",
-        "returnFaceLandmarks": "true"
+        "returnFaceLandmarks": "false"
       };
+      var self = this;
       $.ajax({
         url: "https://westus.api.cognitive.microsoft.com/face/v1.0/detect?" + $.param(params),
         beforeSend: function beforeSend(xhrObj) {
@@ -2238,7 +2252,7 @@ __webpack_require__.r(__webpack_exports__);
         data: this.makeblob(data),
         processData: false
       }).done(function (data) {
-        alert("success");
+        self.verifyFaces(data);
       }).fail(function () {
         alert("error");
       });

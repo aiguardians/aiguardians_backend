@@ -13,6 +13,7 @@
             return {
                 video: null,
                 ctx: null,
+                faces: [],
             };
         },
         mounted: function() {
@@ -41,6 +42,10 @@
             drawVideo: function() {
                 window.requestAnimationFrame(this.drawVideo);
                 this.ctx.drawImage(this.video, 0, 0);
+                this.faces.forEach(function(f) {
+                    this.ctx.rect(f.left, f.top, f.width, f.height);
+                    this.ctx.stroke();
+                });
             },
             makeblob: function (dataURL) {
                 var BASE64_MARKER = ';base64,';
@@ -63,14 +68,24 @@
 
                 return new Blob([uInt8Array], { type: contentType });
             },
+            verifyFaces: function(data) {
+                var self = this;
+                data.forEach(function(face) {
+                    self.drawFaceRectangle(face.faceRectangle)
+                });
+            },
+            drawFaceRectangle: function(f) {
+                this.faces.push(f);
+            },
             takeScreenshot: function() {
                 const img = document.querySelector('#screenshot');
                 var data = this.ctx.canvas.toDataURL();
                 img.src = data;
                 var params = {
                     "returnFaceId": "true",
-                    "returnFaceLandmarks": "true",
+                    "returnFaceLandmarks": "false",
                 };
+                var self = this;
                 $.ajax({
                     url: "https://westus.api.cognitive.microsoft.com/face/v1.0/detect?" + $.param(params),
                     beforeSend: function(xhrObj) {
@@ -82,7 +97,7 @@
                     processData: false,
                 })
                 .done(function(data) {
-                    alert("success");
+                    self.verifyFaces(data);
                 })
                 .fail(function() {
                     alert("error");
