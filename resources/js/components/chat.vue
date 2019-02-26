@@ -1,5 +1,5 @@
 <template>
-    <div class="chat-wrapper py-4">
+    <div class="chat-wrapper">
         <div id="chat">
             <div class="msg-box" v-for="(message, index) in messages">
                 <message :messageId="index"></message>

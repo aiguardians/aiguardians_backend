@@ -30,13 +30,17 @@ body {
 #chat {
     max-height: 100vh;
     overflow-y: auto;
-    padding-bottom: 151px;
+    padding-bottom: 135px;
 }
 
 .msg-box {
     padding: 3px;
     display: inline-block;
     width: 100%;
+}
+
+.msg-box:first-of-type {
+    padding-top: 25px;
 }
 
 .msg {
