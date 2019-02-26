@@ -2204,6 +2204,7 @@ __webpack_require__.r(__webpack_exports__);
       this.sendDetectionRequest(JSON.stringify({
         "url": window.location.origin + self.students[i].image
       }), 'json').done(function (data) {
+        console.log(data);
         self.students[i].faceId = data[0].faceId;
       }).fail(function () {
         console.log("error");
