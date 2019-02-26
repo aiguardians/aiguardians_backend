@@ -8,14 +8,19 @@
 <script>
     import { saveAs } from 'file-saver';
     export default {
+        props: ['groupid'],
         data: function() {
             return {
                 video: null,
                 ctx: null,
                 faces: [],
+                group: null,
+                students: [],
             };
         },
         mounted: function() {
+            this.getStudents();
+
             if (this.hasGetUserMedia()) {
                 this.main();
             } else {
@@ -23,6 +28,26 @@
             }
         },
         methods: {
+            getStudents: function() {
+                var self = this;
+                axios.get('/api/group/' + this.$props.groupid + '/students')
+                .then(response => {
+                    self.students = response.data.students;
+                    for(var i=0;i<self.students.length;++i) {
+                        self.detectStudent(i);
+                    }
+                    self.group = response.data.group;
+                });
+            },
+            detectStudent: function(i) {
+                var self = this;
+                this.sendDetectionRequest(JSON.stringify({"url": window.location.origin+self.students[i].image}), 'json')
+                .done(function(data) {
+                    self.students[i].faceId = data[0].faceId;
+                }).fail(function() {
+                    console.log("error");
+                });
+            },
             hasGetUserMedia: function () {
               return !!(navigator.mediaDevices &&
                 navigator.mediaDevices.getUserMedia);
@@ -56,6 +81,7 @@
             verifyFaces: function(data) {
                 console.log('Detected: ' + data.length);
                 this.faces = [];
+
                 var self = this;
                 data.forEach(function(face) {
                     self.drawFaceRectangle(face.faceRectangle);
@@ -67,26 +93,11 @@
             takeScreenshot: function() {
                 console.log('screen shot');
                 var self = this;
-                var data = this.ctx.canvas.toDataURL();
-                var params = {
-                    "returnFaceId": "true",
-                    "returnFaceLandmarks": "false",
-                };
-                $.ajax({
-                    url: "https://westus.api.cognitive.microsoft.com/face/v1.0/detect?" + $.param(params),
-                    beforeSend: function(xhrObj) {
-                        xhrObj.setRequestHeader("Content-Type","application/octet-stream");
-                        xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","200fd87c86524526aa0df29ccaa8badd");
-                    },
-                    type: "POST",
-                    data: this.makeblob(data),
-                    processData: false,
-                })
+                this.sendDetectionRequest(this.makeblob(this.ctx.canvas.toDataURL()), 'octet-stream')
                 .done(function(data) {
                     self.verifyFaces(data);
-                })
-                .fail(function() {
-                    alert("error");
+                }).fail(function() {
+                    console.log("error");
                 });
             },
             makeblob: function (dataURL) {
@@ -110,6 +121,22 @@
 
                 return new Blob([uInt8Array], { type: contentType });
             },
+            sendDetectionRequest: function(data, contentType) {
+                var params = {
+                    "returnFaceId": "true",
+                    "returnFaceLandmarks": "false",
+                };
+                return $.ajax({
+                    url: "https://westus.api.cognitive.microsoft.com/face/v1.0/detect?" + $.param(params),
+                    beforeSend: function(xhrObj) {
+                        xhrObj.setRequestHeader("Content-Type","application/"+contentType);
+                        xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","200fd87c86524526aa0df29ccaa8badd");
+                    },
+                    type: "POST",
+                    data: data,
+                    processData: false,
+                });
+            }
         },
     }
 </script>

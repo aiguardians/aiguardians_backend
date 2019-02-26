@@ -22,3 +22,4 @@ Route::get('/query', 'ChatController@query')->name('chat-query');
 
 Route::get('/group/{id}', 'GroupController@index');
 Route::get('/group/{id}/schedule', 'ScheduleController@group');
+Route::get('/group/{id}/students', 'GroupController@students');

@@ -2167,14 +2167,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['groupid'],
   data: function data() {
     return {
       video: null,
       ctx: null,
-      faces: []
+      faces: [],
+      group: null,
+      students: []
     };
   },
   mounted: function mounted() {
+    this.getStudents();
+
     if (this.hasGetUserMedia()) {
       this.main();
     } else {
@@ -2182,6 +2187,28 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    getStudents: function getStudents() {
+      var self = this;
+      axios.get('/api/group/' + this.$props.groupid + '/students').then(function (response) {
+        self.students = response.data.students;
+
+        for (var i = 0; i < self.students.length; ++i) {
+          self.detectStudent(i);
+        }
+
+        self.group = response.data.group;
+      });
+    },
+    detectStudent: function detectStudent(i) {
+      var self = this;
+      this.sendDetectionRequest(JSON.stringify({
+        "url": window.location.origin + self.students[i].image
+      }), 'json').done(function (data) {
+        self.students[i].faceId = data[0].faceId;
+      }).fail(function () {
+        console.log("error");
+      });
+    },
     hasGetUserMedia: function hasGetUserMedia() {
       return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
     },
@@ -2227,24 +2254,10 @@ __webpack_require__.r(__webpack_exports__);
     takeScreenshot: function takeScreenshot() {
       console.log('screen shot');
       var self = this;
-      var data = this.ctx.canvas.toDataURL();
-      var params = {
-        "returnFaceId": "true",
-        "returnFaceLandmarks": "false"
-      };
-      $.ajax({
-        url: "https://westus.api.cognitive.microsoft.com/face/v1.0/detect?" + $.param(params),
-        beforeSend: function beforeSend(xhrObj) {
-          xhrObj.setRequestHeader("Content-Type", "application/octet-stream");
-          xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "200fd87c86524526aa0df29ccaa8badd");
-        },
-        type: "POST",
-        data: this.makeblob(data),
-        processData: false
-      }).done(function (data) {
+      this.sendDetectionRequest(this.makeblob(this.ctx.canvas.toDataURL()), 'octet-stream').done(function (data) {
         self.verifyFaces(data);
       }).fail(function () {
-        alert("error");
+        console.log("error");
       });
     },
     makeblob: function makeblob(dataURL) {
@@ -2271,6 +2284,22 @@ __webpack_require__.r(__webpack_exports__);
 
       return new Blob([uInt8Array], {
         type: contentType
+      });
+    },
+    sendDetectionRequest: function sendDetectionRequest(data, contentType) {
+      var params = {
+        "returnFaceId": "true",
+        "returnFaceLandmarks": "false"
+      };
+      return $.ajax({
+        url: "https://westus.api.cognitive.microsoft.com/face/v1.0/detect?" + $.param(params),
+        beforeSend: function beforeSend(xhrObj) {
+          xhrObj.setRequestHeader("Content-Type", "application/" + contentType);
+          xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "200fd87c86524526aa0df29ccaa8badd");
+        },
+        type: "POST",
+        data: data,
+        processData: false
       });
     }
   }

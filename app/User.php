@@ -43,11 +43,11 @@ class User extends Authenticatable
 
 
     public function teacher() {
-        return $this->hasOne('App\Models\Teacher', 'user_id');
+        return $this->hasOne('\App\Models\Teacher', 'user_id');
     }
 
     public function student() {
-        return $this->hasOne('App\Models\Student', 'user_id');
+        return $this->hasOne('\App\Models\Student', 'user_id');
     }
 
 }
