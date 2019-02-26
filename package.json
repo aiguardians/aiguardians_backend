@@ -24,7 +24,9 @@
         "vue-template-compiler": "^2.6.6"
     },
     "dependencies": {
+        "file-saver": "^2.0.1",
         "microsoft-cognitiveservices-speech-sdk": "^1.2.1",
+        "microsoft-speech-browser-sdk": "0.0.12",
         "moment": "^2.24.0"
     }
 }
