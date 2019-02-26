@@ -34,7 +34,7 @@
                         function (result) {
                             if (result.privText && result.privText.length>0) {
                                 self.$parent.messages.push({content: result.privText, class: 'msg msg-right', component: 'default'});
-                                this.$nextTick(function () {
+                                self.$nextTick(function () {
                                     console.log(document.getElementById("chat").lastChild);
                                     document.getElementById("chat").lastChild.scrollIntoView({behavior: 'smooth'});
                                 });

@@ -1924,7 +1924,7 @@ var sdk = __webpack_require__(/*! microsoft-cognitiveservices-speech-sdk */ "./n
               class: 'msg msg-right',
               component: 'default'
             });
-            this.$nextTick(function () {
+            self.$nextTick(function () {
               console.log(document.getElementById("chat").lastChild);
               document.getElementById("chat").lastChild.scrollIntoView({
                 behavior: 'smooth'
