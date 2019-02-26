@@ -10716,7 +10716,14 @@ body {
 .commands {
   overflow-x: auto;
   white-space: nowrap;
-  padding: 20px 0;
+  padding-bottom: 10px;
+  padding-top: 5px;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+}
+
+.commands::-webkit-scrollbar {
+  display: none;
 }
 
 .command {
@@ -10724,6 +10731,10 @@ body {
   font-weight: lighter;
   padding: 8px 16px;
   cursor: pointer;
+}
+
+.command:last-of-type {
+  margin-right: 5px;
 }
 
 .command:hover {
@@ -10804,6 +10815,12 @@ body {
   display: inline-flex;
   overflow-x: auto;
   white-space: nowrap;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+}
+
+.schedule::-webkit-scrollbar {
+  display: none;
 }
 
 .schedule-day {
@@ -10966,7 +10983,7 @@ body {
 }
 
 .n-brand {
-  text-align: center;
+  padding: 20px 15px;
 }
 
 .n-brand img {
@@ -10985,7 +11002,7 @@ body {
 }
 
 .n-link {
-  padding: 5px 20px;
+  padding: 5px 10px;
 }
 
 .n-link a {
@@ -11038,5 +11055,13 @@ body {
 
 .m-scroll-nav span:first-child {
   margin-left: 0px !important;
+}
+
+.n-link img {
+  margin: auto 5px;
+}
+
+.n-link span {
+  display: contents;
 }
 

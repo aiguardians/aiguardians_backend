@@ -1,16 +1,17 @@
 <template>
     <div class="chat-wrapper py-4">
         <div id="chat">
-            <h2 class="">Добрый день,<br/> <span>Nurdaulet</span></h2>
             <div class="msg-box" v-for="(message, index) in messages">
                 <message :messageId="index"></message>
             </div>
         </div>
         <div id="bottom">
-            <div class="commands">
-                <span role="button" class="badge badge-pill command" v-for="item in commands" :command="item.value" @click="query">
-                    {{ item.label }}
-                </span>
+            <div>
+                <div class="commands">
+                    <span role="button" class="badge badge-pill command" v-for="item in commands" :command="item.value" @click="query">
+                        {{ item.label }}
+                    </span>
+                </div>
             </div>
             <micro-box></micro-box>
         </div>
@@ -22,8 +23,8 @@
         data: function() {
             return {
                 messages: [
-                    {content: 'Как я могу помочь?', 'class': 'msg msg-left'},
-                    {content: 'Уровень заинтересованности', 'class': 'msg msg-right'},
+                    {content: 'Welcome back!', 'class': 'msg msg-left'},
+                    {content: 'How can i help you?', 'class': 'msg msg-left'},
                 ],
                 commands: [
                     {label: 'Schedule', value: 'Give me the schedule'},

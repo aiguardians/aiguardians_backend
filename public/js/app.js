@@ -1782,15 +1782,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       messages: [{
-        content: 'Как я могу помочь?',
+        content: 'Welcome back!',
         'class': 'msg msg-left'
       }, {
-        content: 'Уровень заинтересованности',
-        'class': 'msg msg-right'
+        content: 'How can i help you?',
+        'class': 'msg msg-left'
       }],
       commands: [{
         label: 'Schedule',
@@ -1945,9 +1946,9 @@ var sdk = __webpack_require__(/*! microsoft-cognitiveservices-speech-sdk */ "./n
       var self = this;
       window.AudioContext = window.AudioContext || window.webkitAudioContext;
       var audioCtx = new AudioContext();
-      navigator.getUserMedia({
+      navigator.mediaDevices.getUserMedia({
         audio: true
-      }, function (stream) {
+      }).then(function (stream) {
         animate(stream);
 
         function animate(stream) {
@@ -2003,8 +2004,7 @@ var sdk = __webpack_require__(/*! microsoft-cognitiveservices-speech-sdk */ "./n
             ctx.stroke();
           }
         }
-      }, function (e) {
-        alert('Error capturing audio.');
+      }).catch(function (e) {
         alert(e);
       });
     }
@@ -48133,45 +48133,45 @@ var render = function() {
     _c(
       "div",
       { attrs: { id: "chat" } },
-      [
-        _vm._m(0),
-        _vm._v(" "),
-        _vm._l(_vm.messages, function(message, index) {
-          return _c(
-            "div",
-            { staticClass: "msg-box" },
-            [_c("message", { attrs: { messageId: index } })],
-            1
-          )
-        })
-      ],
-      2
+      _vm._l(_vm.messages, function(message, index) {
+        return _c(
+          "div",
+          { staticClass: "msg-box" },
+          [_c("message", { attrs: { messageId: index } })],
+          1
+        )
+      }),
+      0
     ),
     _vm._v(" "),
     _c(
       "div",
       { attrs: { id: "bottom" } },
       [
-        _c(
-          "div",
-          { staticClass: "commands" },
-          _vm._l(_vm.commands, function(item) {
-            return _c(
-              "span",
-              {
-                staticClass: "badge badge-pill command",
-                attrs: { role: "button", command: item.value },
-                on: { click: _vm.query }
-              },
-              [
-                _vm._v(
-                  "\n                " + _vm._s(item.label) + "\n            "
-                )
-              ]
-            )
-          }),
-          0
-        ),
+        _c("div", [
+          _c(
+            "div",
+            { staticClass: "commands" },
+            _vm._l(_vm.commands, function(item) {
+              return _c(
+                "span",
+                {
+                  staticClass: "badge badge-pill command",
+                  attrs: { role: "button", command: item.value },
+                  on: { click: _vm.query }
+                },
+                [
+                  _vm._v(
+                    "\n                    " +
+                      _vm._s(item.label) +
+                      "\n                "
+                  )
+                ]
+              )
+            }),
+            0
+          )
+        ]),
         _vm._v(" "),
         _c("micro-box")
       ],
@@ -48179,19 +48179,7 @@ var render = function() {
     )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h2", {}, [
-      _vm._v("Добрый день,"),
-      _c("br"),
-      _vm._v(" "),
-      _c("span", [_vm._v("Nurdaulet")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
