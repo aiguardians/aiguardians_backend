@@ -2229,8 +2229,8 @@ __webpack_require__.r(__webpack_exports__);
         if (!f.coords) return;
         self.ctx.strokeStyle = "rgba(0, 255, 0, 0.7)";
         self.ctx.rect(f.coords.left, f.coords.top, f.coords.width, f.coords.height);
-        ctx.font = "30px Arial";
-        ctx.fillText(f.first_name + ' ' + f.last_name, f.coords.left, f.coords.top);
+        self.ctx.font = "30px Arial";
+        self.ctx.fillText(f.first_name + ' ' + f.last_name, f.coords.left, f.coords.top);
         self.ctx.stroke();
       });
       this.faces.forEach(function (f) {
