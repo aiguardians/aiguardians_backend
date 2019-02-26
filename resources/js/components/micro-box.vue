@@ -61,7 +61,7 @@
                 var audioCtx = new AudioContext();
                 navigator.getUserMedia({audio:true},
                     function(stream) {
-                        // animate(stream);
+                        animate(stream);
                         function animate(stream) {
                             var canvas = document.getElementById('micro-background');
                             var ctx = canvas.getContext('2d');

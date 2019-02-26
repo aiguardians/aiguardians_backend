@@ -1,8 +1,7 @@
 <template>
     <div>
         <video autoplay class="d-none"></video>
-        <canvas id="canvas" width="640" height="480" @click="takeScreenshot"></canvas>
-        <img id="screenshot" class="" src=""/>
+        <canvas id="canvas" width="640" height="480"></canvas>
     </div>
 </template>
 
@@ -38,13 +37,56 @@
 
                 this.ctx = document.getElementById('canvas').getContext('2d');
                 this.drawVideo();
+                var self = this;
+                window.setInterval(function() {
+                    self.takeScreenshot();
+                }, 5000);
             },
             drawVideo: function() {
                 window.requestAnimationFrame(this.drawVideo);
+                this.ctx.beginPath();
                 this.ctx.drawImage(this.video, 0, 0);
+                var self = this;
                 this.faces.forEach(function(f) {
-                    this.ctx.rect(f.left, f.top, f.width, f.height);
-                    this.ctx.stroke();
+                    self.ctx.strokeStyle = "rgba(255, 0, 0, 0.7)";
+                    self.ctx.rect(f.left, f.top, f.width, f.height);
+                    self.ctx.stroke();
+                });
+            },
+            verifyFaces: function(data) {
+                console.log('Detected: ' + data.length);
+                this.faces = [];
+                var self = this;
+                data.forEach(function(face) {
+                    self.drawFaceRectangle(face.faceRectangle);
+                });
+            },
+            drawFaceRectangle: function(f) {
+                this.faces.push(f);
+            },
+            takeScreenshot: function() {
+                console.log('screen shot');
+                var self = this;
+                var data = this.ctx.canvas.toDataURL();
+                var params = {
+                    "returnFaceId": "true",
+                    "returnFaceLandmarks": "false",
+                };
+                $.ajax({
+                    url: "https://westus.api.cognitive.microsoft.com/face/v1.0/detect?" + $.param(params),
+                    beforeSend: function(xhrObj) {
+                        xhrObj.setRequestHeader("Content-Type","application/octet-stream");
+                        xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","200fd87c86524526aa0df29ccaa8badd");
+                    },
+                    type: "POST",
+                    data: this.makeblob(data),
+                    processData: false,
+                })
+                .done(function(data) {
+                    self.verifyFaces(data);
+                })
+                .fail(function() {
+                    alert("error");
                 });
             },
             makeblob: function (dataURL) {
@@ -67,41 +109,6 @@
                 }
 
                 return new Blob([uInt8Array], { type: contentType });
-            },
-            verifyFaces: function(data) {
-                var self = this;
-                data.forEach(function(face) {
-                    self.drawFaceRectangle(face.faceRectangle)
-                });
-            },
-            drawFaceRectangle: function(f) {
-                this.faces.push(f);
-            },
-            takeScreenshot: function() {
-                const img = document.querySelector('#screenshot');
-                var data = this.ctx.canvas.toDataURL();
-                img.src = data;
-                var params = {
-                    "returnFaceId": "true",
-                    "returnFaceLandmarks": "false",
-                };
-                var self = this;
-                $.ajax({
-                    url: "https://westus.api.cognitive.microsoft.com/face/v1.0/detect?" + $.param(params),
-                    beforeSend: function(xhrObj) {
-                        xhrObj.setRequestHeader("Content-Type","application/octet-stream");
-                        xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","200fd87c86524526aa0df29ccaa8badd");
-                    },
-                    type: "POST",
-                    data: this.makeblob(data),
-                    processData: false,
-                })
-                .done(function(data) {
-                    self.verifyFaces(data);
-                })
-                .fail(function() {
-                    alert("error");
-                });
             },
         },
     }
