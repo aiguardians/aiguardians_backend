@@ -2248,6 +2248,8 @@ __webpack_require__.r(__webpack_exports__);
       });
 
       for (var i = 0; i < this.students.length; ++i) {
+        this.students.coords = null;
+
         for (var j = 0; j < faces.length; ++j) {
           if (this.faces[j].checked) {
             break;

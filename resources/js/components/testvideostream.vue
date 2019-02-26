@@ -93,6 +93,7 @@
                 var self = this;
                 this.faces = faces.map(f => { return f.faceRectangle; });
                 for(var i = 0;i<this.students.length;++i) {
+                    this.students.coords = null;
                     for(var j = 0;j<faces.length;++j) {
                         if (this.faces[j].checked) {
                             break;
