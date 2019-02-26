@@ -1824,6 +1824,12 @@ __webpack_require__.r(__webpack_exports__);
         class: 'msg msg-right',
         component: 'default'
       });
+      this.$nextTick(function () {
+        console.log(document.getElementById("chat").lastChild);
+        document.getElementById("chat").lastChild.scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
       axios.get('/api/query', {
         params: {
           content: command
@@ -1917,6 +1923,12 @@ var sdk = __webpack_require__(/*! microsoft-cognitiveservices-speech-sdk */ "./n
               content: result.privText,
               class: 'msg msg-right',
               component: 'default'
+            });
+            this.$nextTick(function () {
+              console.log(document.getElementById("chat").lastChild);
+              document.getElementById("chat").lastChild.scrollIntoView({
+                behavior: 'smooth'
+              });
             });
             axios.get('/api/query', {
               params: {
