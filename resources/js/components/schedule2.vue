@@ -39,22 +39,22 @@
             return {
                 days: [
                     {
-                        name: 'Понедельник',
+                        name: 'Monday',
                     },
                     {
-                        name: 'Вторник',
+                        name: 'Tuesday',
                     },
                     {
-                        name: 'Среда',
+                        name: 'Wednesday',
                     },
                     {
-                        name: 'Четверг'
+                        name: 'Thursday'
                     },
                     {
-                        name: 'Пятница',
+                        name: 'Friday',
                     },
                     {
-                        name: 'Суббота',
+                        name: 'Saturday',
                     },
                 ],
                 schedule: [],

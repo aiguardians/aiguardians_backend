@@ -2044,17 +2044,17 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       days: [{
-        name: 'Понедельник'
+        name: 'Monday'
       }, {
-        name: 'Вторник'
+        name: 'Tuesday'
       }, {
-        name: 'Среда'
+        name: 'Wednesday'
       }, {
-        name: 'Четверг'
+        name: 'Thursday'
       }, {
-        name: 'Пятница'
+        name: 'Friday'
       }, {
-        name: 'Суббота'
+        name: 'Saturday'
       }],
       group: this.$parent.message.content.group,
       schedule: this.$parent.message.content.schedule
@@ -2113,17 +2113,17 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       days: [{
-        name: 'Понедельник'
+        name: 'Monday'
       }, {
-        name: 'Вторник'
+        name: 'Tuesday'
       }, {
-        name: 'Среда'
+        name: 'Wednesday'
       }, {
-        name: 'Четверг'
+        name: 'Thursday'
       }, {
-        name: 'Пятница'
+        name: 'Friday'
       }, {
-        name: 'Суббота'
+        name: 'Saturday'
       }],
       schedule: [],
       currentDay: 1,
