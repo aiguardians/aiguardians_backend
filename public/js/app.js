@@ -1997,6 +1997,7 @@ var sdk = __webpack_require__(/*! microsoft-cognitiveservices-speech-sdk */ "./n
         }
       }, function (e) {
         alert('Error capturing audio.');
+        alert(e);
       });
     }
   }

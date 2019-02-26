@@ -117,6 +117,7 @@
                     },
                     function(e) {
                         alert('Error capturing audio.');
+                        alert(e);
                     }
                 );
 
