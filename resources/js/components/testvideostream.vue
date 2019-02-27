@@ -82,10 +82,14 @@
                             if (this.faces[j].checked || this.students[i].coords) resolve();
                             else {
                                 this.verifyFace(i, j).then(data => {
-                                    this.students[i].cnt++;
-                                    this.students[i].coords = this.faces[j].faceRectangle;
-                                    this.faces[j].checked = true;
-                                    resolve();
+                                    if (data.isIdentical) {
+                                        this.students[i].cnt++;
+                                        this.students[i].coords = this.faces[j].faceRectangle;
+                                        this.faces[j].checked = true;
+                                    }
+                                    setTimeout(function() {
+                                        resolve();
+                                    }, 1000);
                                 });
                             }
                         }));
@@ -94,6 +98,7 @@
                 return p;
             },
             verifyFace: function(i, j) {
+                console.log('Verify: ' + i ", " + j);
                 return this.sendDetectionRequest('verify', JSON.stringify({faceId1: this.students[i].faceId, faceId2: this.faces[j].faceId}), 'json', {});
             },
             detectFaces: function() {
