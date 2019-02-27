@@ -2167,134 +2167,167 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    this.getStudents();
+    var _this = this;
 
-    if (this.hasGetUserMedia()) {
-      this.main();
-    } else {
-      alert('getUserMedia() is not supported by your browser');
-    }
+    this.getStudents().then(function (response) {
+      _this.students = response.data.students;
+      _this.group = response.data.group;
+      var p = Promise.resolve();
+
+      var _loop = function _loop(i) {
+        p = p.then(function (_) {
+          return new Promise(function (resolve) {
+            _this.detectStudent(i).then(function (data) {
+              _this.students[i].faceId = data[0].faceId;
+              _this.students[i].cnt = 0;
+              resolve();
+            });
+          });
+        });
+      };
+
+      for (var i = 0; i < _this.students.length; i++) {
+        _loop(i);
+      }
+
+      p.then(function (_) {
+        _this.main();
+      });
+    });
   },
   methods: {
-    getStudents: function getStudents() {
-      var self = this;
-      axios.get('/api/group/' + this.$props.groupid + '/students').then(function (response) {
-        self.students = response.data.students;
-
-        for (var i = 0; i < self.students.length; ++i) {
-          var s_id = i;
-          self.detectStudent(s_id);
-        }
-
-        self.group = response.data.group;
-      });
-    },
     detectStudent: function detectStudent(i) {
-      var self = this;
-      this.sendDetectionRequest("detect", JSON.stringify({
-        "url": window.location.origin + self.students[i].image
-      }), 'json').done(function (data) {
-        console.log(data);
-        self.students[i].faceId = data[0].faceId;
-        self.students[i].cnt = 0;
-      }).fail(function () {
-        console.log("error");
-      });
+      return this.sendDetectionRequest("detect", JSON.stringify({
+        "url": window.location.origin + this.students[i].image
+      }), 'json');
     },
-    hasGetUserMedia: function hasGetUserMedia() {
-      return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+    getStudents: function getStudents() {
+      return axios.get('/api/group/' + this.$props.groupid + '/students');
     },
     main: function main() {
-      var _this = this;
+      var _this2 = this;
 
-      this.video = document.querySelector('video');
-      var constraints = {
-        video: true
-      };
-      navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
-        _this.video.srcObject = stream;
+      if (this.hasGetUserMedia()) {
+        this.ctx = document.getElementById('canvas').getContext('2d');
+        this.video = document.querySelector('video');
+        var constraints = {
+          video: true
+        };
+        navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+          _this2.video.srcObject = stream;
+
+          _this2.drawVideo();
+
+          _this2.runDetection();
+        });
+      } else {
+        alert('getUserMedia() is not supported by your browser');
+      }
+    },
+    runDetection: function runDetection() {
+      var _this3 = this;
+
+      this.detectFaces().then(function (data) {
+        _this3.faces = data;
+
+        _this3.verifyFaces().then(function (_) {
+          _this3.runDetection();
+        });
       });
-      this.ctx = document.getElementById('canvas').getContext('2d');
-      this.drawVideo();
-      var self = this;
-      window.setInterval(function () {
-        self.takeScreenshot();
-      }, 7000);
+    },
+    verifyFaces: function verifyFaces() {
+      var _this4 = this;
+
+      console.log('Detected: ' + this.faces.length);
+      var p = Promise.resolve();
+
+      var _loop2 = function _loop2(i) {
+        _this4.students[i].coords = null;
+
+        var _loop3 = function _loop3(j) {
+          if (_this4.faces[j].checked) {
+            return "continue";
+          }
+
+          p = p.then(function (_) {
+            return new Promise(function (resolve) {
+              if (_this4.faces[j].checked || _this4.students[i].coords) resolve();else {
+                _this4.verifyFace(i, j).then(function (data) {
+                  _this4.students[i].cnt++;
+                  _this4.students[i].coords = _this4.faces[j].faceRectangle;
+                  _this4.faces[j].checked = true;
+                  resolve();
+                });
+              }
+            });
+          });
+        };
+
+        for (var j = 0; j < _this4.faces.length; ++j) {
+          var _ret = _loop3(j);
+
+          if (_ret === "continue") continue;
+        }
+      };
+
+      for (var i = 0; i < this.students.legth; ++i) {
+        _loop2(i);
+      }
+
+      return p;
+    },
+    verifyFace: function verifyFace(i, j) {
+      return this.sendDetectionRequest('verify', JSON.stringify({
+        faceId1: this.students[i].faceId,
+        faceId2: this.faces[j].faceId
+      }), 'json', {});
+    },
+    detectFaces: function detectFaces() {
+      console.log('screen shot');
+      return this.sendDetectionRequest("detect", this.makeblob(this.ctx.canvas.toDataURL()), 'octet-stream');
     },
     drawVideo: function drawVideo() {
       window.requestAnimationFrame(this.drawVideo);
       this.ctx.beginPath();
+      this.ctx.font = "30px Arial";
       this.ctx.drawImage(this.video, 0, 0);
-      var self = this;
-      this.students.forEach(function (f) {
-        if (!f.coords) return;
-        self.ctx.strokeStyle = "rgba(0, 255, 0, 0.7)";
-        self.ctx.rect(f.coords.left, f.coords.top, f.coords.width, f.coords.height);
-        self.ctx.font = "30px Arial";
-        self.ctx.fillText(f.first_name + ' ' + f.last_name, f.coords.left, f.coords.top);
-        self.ctx.stroke();
-      });
-      this.faces.forEach(function (f) {
-        if (f.checked) return;
-        self.ctx.strokeStyle = "rgba(255, 0, 0, 0.7)";
-        self.ctx.rect(f.left, f.top, f.width, f.height);
-        self.ctx.stroke();
-      });
+      this.drawDetectedStudents();
+      this.drawOtherStudents();
+      this.ctx.stroke();
     },
-    verifyFaces: function verifyFaces(faces) {
-      var _this2 = this;
-
-      console.log('Detected: ' + faces.length);
-      var self = this;
-      this.faces = [];
-
-      for (var i = 0; i < faces.length; ++i) {
-        this.faces.push(faces[i].faceRectangle);
-      } // this.faces = faces.map(f => { return f.faceRectangle; });
-
+    drawDetectedStudents: function drawDetectedStudents() {
+      this.ctx.strokeStyle = "rgba(0, 255, 0, 0.7)";
 
       for (var i = 0; i < this.students.length; ++i) {
-        this.students[i].coords = null;
-
-        var _loop = function _loop() {
-          if (_this2.faces[j].checked) {
-            return "break";
-          }
-
-          var s_id = i;
-          var f_id = j;
-
-          _this2.sendDetectionRequest('verify', JSON.stringify({
-            faceId1: _this2.students[i].faceId,
-            faceId2: faces[j].faceId
-          }), 'json', {}).done(function (data) {
-            if (data.isIdentical) {
-              console.log('identical');
-              self.students[s_id].cnt++;
-              self.students[s_id].coords = faces[f_id].faceRectangle;
-              self.faces[f_id].checked = true;
-            }
-
-            console.log(data);
-          }).fail(function (err) {
-            console.log(err);
-          });
-        };
-
-        for (var j = 0; j < faces.length; ++j) {
-          var _ret = _loop();
-
-          if (_ret === "break") break;
-        }
+        if (!this.students[i].coords) continue;
+        var coords = this.students[i].coords;
+        this.ctx.rect(coords.left, coords.top, coords.width, coords.height);
+        this.ctx.fillText(this.students[i].first_name + ' ' + this.students[i].last_name, coords.left, coords.top);
       }
     },
-    takeScreenshot: function takeScreenshot() {
-      console.log('screen shot');
-      var self = this;
-      this.sendDetectionRequest("detect", this.makeblob(this.ctx.canvas.toDataURL()), 'octet-stream').done(function (data) {
-        self.verifyFaces(data);
-      }).fail(function () {
-        console.log("error");
+    drawOtherStudents: function drawOtherStudents() {
+      this.ctx.strokeStyle = "rgba(255, 0, 0, 0.7)";
+
+      for (var i = 0; i < this.faces.length; ++i) {
+        var coords = this.faces[i].faceRectangle;
+        if (this.faces[i].checked) return;
+        this.ctx.rect(coords.left, coords.top, coords.width, coords.height);
+      }
+    },
+    sendDetectionRequest: function sendDetectionRequest(action, data, contentType) {
+      var params = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {
+        returnFaceId: "true",
+        returnFaceLandmarks: "false"
+      };
+      return $.ajax({
+        url: "https://westus.api.cognitive.microsoft.com/face/v1.0/" + action + "?" + $.param(params),
+        beforeSend: function beforeSend(xhrObj) {
+          xhrObj.setRequestHeader("Content-Type", "application/" + contentType);
+          xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "200fd87c86524526aa0df29ccaa8badd");
+        },
+        type: "POST",
+        data: data,
+        processData: false
       });
     },
     makeblob: function makeblob(dataURL) {
@@ -2323,21 +2356,8 @@ __webpack_require__.r(__webpack_exports__);
         type: contentType
       });
     },
-    sendDetectionRequest: function sendDetectionRequest(action, data, contentType) {
-      var params = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {
-        returnFaceId: "true",
-        returnFaceLandmarks: "false"
-      };
-      return $.ajax({
-        url: "https://westus.api.cognitive.microsoft.com/face/v1.0/" + action + "?" + $.param(params),
-        beforeSend: function beforeSend(xhrObj) {
-          xhrObj.setRequestHeader("Content-Type", "application/" + contentType);
-          xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "200fd87c86524526aa0df29ccaa8badd");
-        },
-        type: "POST",
-        data: data,
-        processData: false
-      });
+    hasGetUserMedia: function hasGetUserMedia() {
+      return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
     }
   }
 });
