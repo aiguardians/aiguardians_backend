@@ -2180,7 +2180,9 @@ __webpack_require__.r(__webpack_exports__);
             _this.detectStudent(i).then(function (data) {
               _this.students[i].faceId = data[0].faceId;
               _this.students[i].cnt = 0;
-              resolve();
+              setTimeout(function () {
+                resolve();
+              }, 1000);
             });
           });
         });
@@ -2198,7 +2200,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     detectStudent: function detectStudent(i) {
       return this.sendDetectionRequest("detect", JSON.stringify({
-        "url": window.location.origin + this.students[i].image
+        "url": "https://testaiguardians.azurewebsites.net" + this.students[i].image
       }), 'json');
     },
     getStudents: function getStudents() {
@@ -2231,7 +2233,10 @@ __webpack_require__.r(__webpack_exports__);
         _this3.faces = data;
 
         _this3.verifyFaces().then(function (_) {
-          _this3.runDetection();
+          var self = _this3;
+          setTimeout(function () {
+            self.runDetection();
+          }, 5000);
         });
       });
     },
@@ -2251,12 +2256,16 @@ __webpack_require__.r(__webpack_exports__);
 
           p = p.then(function (_) {
             return new Promise(function (resolve) {
-              if (_this4.faces[j].checked || _this4.students[i].coords) resolve();else {
+              if (_this4.faces[j].checked || _this4.students[i].coords) {
+                resolve();
+                console.log('continue');
+              } else {
                 _this4.verifyFace(i, j).then(function (data) {
                   if (data.isIdentical) {
                     _this4.students[i].cnt++;
                     _this4.students[i].coords = _this4.faces[j].faceRectangle;
                     _this4.faces[j].checked = true;
+                    console.log("Detected: " + _this4.students[i].first_name);
                   }
 
                   setTimeout(function () {
@@ -2275,14 +2284,13 @@ __webpack_require__.r(__webpack_exports__);
         }
       };
 
-      for (var i = 0; i < this.students.legth; ++i) {
+      for (var i = 0; i < this.students.length; ++i) {
         _loop2(i);
       }
 
       return p;
     },
     verifyFace: function verifyFace(i, j) {
-      console.log('Verify: ' + i + ", " + j);
       return this.sendDetectionRequest('verify', JSON.stringify({
         faceId1: this.students[i].faceId,
         faceId2: this.faces[j].faceId
@@ -2295,30 +2303,35 @@ __webpack_require__.r(__webpack_exports__);
     drawVideo: function drawVideo() {
       window.requestAnimationFrame(this.drawVideo);
       this.ctx.beginPath();
-      this.ctx.font = "30px Arial";
+      this.ctx.font = "20px Arial";
       this.ctx.drawImage(this.video, 0, 0);
       this.drawDetectedStudents();
       this.drawOtherStudents();
-      this.ctx.stroke();
     },
     drawDetectedStudents: function drawDetectedStudents() {
       this.ctx.strokeStyle = "rgba(0, 255, 0, 0.7)";
+      this.ctx.fillStyle = "rgba(0, 255, 0, 0.7)";
 
       for (var i = 0; i < this.students.length; ++i) {
         if (!this.students[i].coords) continue;
         var coords = this.students[i].coords;
         this.ctx.rect(coords.left, coords.top, coords.width, coords.height);
-        this.ctx.fillText(this.students[i].first_name + ' ' + this.students[i].last_name, coords.left, coords.top);
+        this.ctx.fillText(this.students[i].first_name + ' ' + this.students[i].last_name, coords.left, coords.top - 5);
       }
+
+      this.ctx.stroke();
     },
     drawOtherStudents: function drawOtherStudents() {
       this.ctx.strokeStyle = "rgba(255, 0, 0, 0.7)";
+      this.ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
 
       for (var i = 0; i < this.faces.length; ++i) {
         var coords = this.faces[i].faceRectangle;
         if (this.faces[i].checked) return;
         this.ctx.rect(coords.left, coords.top, coords.width, coords.height);
       }
+
+      this.ctx.stroke();
     },
     sendDetectionRequest: function sendDetectionRequest(action, data, contentType) {
       var params = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {

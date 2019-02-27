@@ -27,7 +27,9 @@
                         this.detectStudent(i).then(data => {
                             this.students[i].faceId = data[0].faceId;
                             this.students[i].cnt = 0;
-                            resolve();
+                            setTimeout(function() {
+                                resolve();
+                            }, 1000);
                         });
                     }));
                 }
@@ -38,7 +40,7 @@
         },
         methods: {
             detectStudent: function(i) {
-                return this.sendDetectionRequest("detect", JSON.stringify({"url": window.location.origin+this.students[i].image}), 'json');
+                return this.sendDetectionRequest("detect", JSON.stringify({"url": "https://testaiguardians.azurewebsites.net"+this.students[i].image}), 'json');
             },
             getStudents: function() {
                 return axios.get('/api/group/' + this.$props.groupid + '/students');
@@ -65,27 +67,34 @@
                 this.detectFaces().then(data => {
                     this.faces = data;
                     this.verifyFaces().then(_ => {
-                        this.runDetection();
+                        let self = this;
+                        setTimeout(function() {
+                            self.runDetection();
+                        }, 5000);
                     });
                 });
             },
             verifyFaces: function() {
                 console.log('Detected: ' + this.faces.length);
                 let p = Promise.resolve();
-                for (let i=0;i<this.students.legth;++i) {
+                for (let i=0;i<this.students.length;++i) {
                     this.students[i].coords = null;
                     for (let j=0;j<this.faces.length;++j) {
                         if (this.faces[j].checked) {
                             continue;
                         }
                         p = p.then(_ => new Promise(resolve => {
-                            if (this.faces[j].checked || this.students[i].coords) resolve();
+                            if (this.faces[j].checked || this.students[i].coords) {
+                                resolve();
+                                console.log('continue');
+                            }
                             else {
                                 this.verifyFace(i, j).then(data => {
                                     if (data.isIdentical) {
                                         this.students[i].cnt++;
                                         this.students[i].coords = this.faces[j].faceRectangle;
                                         this.faces[j].checked = true;
+                                        console.log("Detected: " + this.students[i].first_name);
                                     }
                                     setTimeout(function() {
                                         resolve();
@@ -98,7 +107,6 @@
                 return p;
             },
             verifyFace: function(i, j) {
-                console.log('Verify: ' + i + ", " + j);
                 return this.sendDetectionRequest('verify', JSON.stringify({faceId1: this.students[i].faceId, faceId2: this.faces[j].faceId}), 'json', {});
             },
             detectFaces: function() {
@@ -108,28 +116,31 @@
             drawVideo: function() {
                 window.requestAnimationFrame(this.drawVideo);
                 this.ctx.beginPath();
-                this.ctx.font = "30px Arial";
+                this.ctx.font = "20px Arial";
                 this.ctx.drawImage(this.video, 0, 0);
                 this.drawDetectedStudents();
                 this.drawOtherStudents();
-                this.ctx.stroke();
             },
             drawDetectedStudents: function() {
                 this.ctx.strokeStyle = "rgba(0, 255, 0, 0.7)";
+                this.ctx.fillStyle = "rgba(0, 255, 0, 0.7)";
                 for (let i=0;i<this.students.length;++i) {
                     if (!this.students[i].coords) continue;
                     let coords = this.students[i].coords;
                     this.ctx.rect(coords.left, coords.top, coords.width, coords.height);
-                    this.ctx.fillText(this.students[i].first_name + ' ' + this.students[i].last_name, coords.left, coords.top);
+                    this.ctx.fillText(this.students[i].first_name + ' ' + this.students[i].last_name, coords.left, coords.top-5);
                 }
+                this.ctx.stroke();
             },
             drawOtherStudents: function() {
                 this.ctx.strokeStyle = "rgba(255, 0, 0, 0.7)";
+                this.ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
                 for (let i=0;i<this.faces.length;++i) {
                     let coords = this.faces[i].faceRectangle;
                     if (this.faces[i].checked) return;
                     this.ctx.rect(coords.left, coords.top, coords.width, coords.height);
                 }
+                this.ctx.stroke();
             },
             sendDetectionRequest: function(action, data, contentType, params={returnFaceId: "true", returnFaceLandmarks: "false"}) {
                 return $.ajax({
