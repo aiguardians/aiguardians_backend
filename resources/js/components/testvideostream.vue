@@ -91,7 +91,11 @@
             verifyFaces: function(faces) {
                 console.log('Detected: ' + faces.length);
                 var self = this;
-                this.faces = faces.map(f => { return f.faceRectangle; });
+                this.faces = [];
+                for(var i = 0;i<faces.length;++i) {
+                    this.faces.push(faces[i].faceRectangle);
+                }
+                // this.faces = faces.map(f => { return f.faceRectangle; });
                 for(var i = 0;i<this.students.length;++i) {
                     this.students.coords = null;
                     for(var j = 0;j<faces.length;++j) {
