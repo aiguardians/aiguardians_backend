@@ -2182,7 +2182,8 @@ __webpack_require__.r(__webpack_exports__);
         self.students = response.data.students;
 
         for (var i = 0; i < self.students.length; ++i) {
-          self.detectStudent(i);
+          var s_id = i;
+          self.detectStudent(s_id);
         }
 
         self.group = response.data.group;
@@ -2251,7 +2252,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
       for (var i = 0; i < this.students.length; ++i) {
-        this.students.coords = null;
+        this.students[i].coords = null;
 
         for (var j = 0; j < faces.length; ++j) {
           if (this.faces[j].checked) {
