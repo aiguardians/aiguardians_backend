@@ -33,7 +33,7 @@
                 .then(response => {
                     self.students = response.data.students;
                     for(var i=0;i<self.students.length;++i) {
-                        var s_id = i;
+                        const s_id = i;
                         self.detectStudent(s_id);
                     }
                     self.group = response.data.group;
@@ -103,8 +103,8 @@
                         if (this.faces[j].checked) {
                             break;
                         }
-                        var s_id = i;
-                        var f_id = j;
+                        const s_id = i;
+                        const f_id = j;
                         this.sendDetectionRequest('verify', JSON.stringify({faceId1: this.students[i].faceId, faceId2: faces[j].faceId}), 'json', {})
                         .done(function(data) {
                             if (data.isIdentical) {

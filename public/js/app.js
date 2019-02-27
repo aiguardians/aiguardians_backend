@@ -2242,6 +2242,8 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     verifyFaces: function verifyFaces(faces) {
+      var _this2 = this;
+
       console.log('Detected: ' + faces.length);
       var self = this;
       this.faces = [];
@@ -2254,15 +2256,16 @@ __webpack_require__.r(__webpack_exports__);
       for (var i = 0; i < this.students.length; ++i) {
         this.students[i].coords = null;
 
-        for (var j = 0; j < faces.length; ++j) {
-          if (this.faces[j].checked) {
-            break;
+        var _loop = function _loop() {
+          if (_this2.faces[j].checked) {
+            return "break";
           }
 
           var s_id = i;
           var f_id = j;
-          this.sendDetectionRequest('verify', JSON.stringify({
-            faceId1: this.students[i].faceId,
+
+          _this2.sendDetectionRequest('verify', JSON.stringify({
+            faceId1: _this2.students[i].faceId,
             faceId2: faces[j].faceId
           }), 'json', {}).done(function (data) {
             if (data.isIdentical) {
@@ -2276,6 +2279,12 @@ __webpack_require__.r(__webpack_exports__);
           }).fail(function (err) {
             console.log(err);
           });
+        };
+
+        for (var j = 0; j < faces.length; ++j) {
+          var _ret = _loop();
+
+          if (_ret === "break") break;
         }
       }
     },
