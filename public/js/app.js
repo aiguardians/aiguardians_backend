@@ -2200,7 +2200,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     detectStudent: function detectStudent(i) {
       return this.sendDetectionRequest("detect", JSON.stringify({
-        "url": "https://testaiguardians.azurewebsites.net" + this.students[i].image
+        "url": window.location.origin + this.students[i].image
       }), 'json');
     },
     getStudents: function getStudents() {

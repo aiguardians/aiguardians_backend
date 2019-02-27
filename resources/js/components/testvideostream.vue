@@ -40,7 +40,7 @@
         },
         methods: {
             detectStudent: function(i) {
-                return this.sendDetectionRequest("detect", JSON.stringify({"url": "https://testaiguardians.azurewebsites.net"+this.students[i].image}), 'json');
+                return this.sendDetectionRequest("detect", JSON.stringify({"url": window.location.origin + this.students[i].image}), 'json');
             },
             getStudents: function() {
                 return axios.get('/api/group/' + this.$props.groupid + '/students');
