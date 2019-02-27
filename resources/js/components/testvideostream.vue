@@ -98,7 +98,7 @@
                 return p;
             },
             verifyFace: function(i, j) {
-                console.log('Verify: ' + i ", " + j);
+                console.log('Verify: ' + i + ", " + j);
                 return this.sendDetectionRequest('verify', JSON.stringify({faceId1: this.students[i].faceId, faceId2: this.faces[j].faceId}), 'json', {});
             },
             detectFaces: function() {
