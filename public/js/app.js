@@ -2183,8 +2183,12 @@ __webpack_require__.r(__webpack_exports__);
               setTimeout(function () {
                 resolve();
               }, 1000);
+            }).catch(function (err) {
+              console.log(err);
             });
           });
+        }).catch(function (err) {
+          console.log(err);
         });
       };
 
@@ -2194,7 +2198,11 @@ __webpack_require__.r(__webpack_exports__);
 
       p.then(function (_) {
         _this.main();
+      }).catch(function (err) {
+        console.log(err);
       });
+    }).catch(function (err) {
+      console.log(err);
     });
   },
   methods: {
@@ -2221,6 +2229,8 @@ __webpack_require__.r(__webpack_exports__);
           _this2.drawVideo();
 
           _this2.runDetection();
+        }).catch(function (err) {
+          console.log(err);
         });
       } else {
         alert('getUserMedia() is not supported by your browser');
@@ -2237,7 +2247,16 @@ __webpack_require__.r(__webpack_exports__);
           setTimeout(function () {
             self.runDetection();
           }, 5000);
+        }).catch(function (err) {
+          console.log(err);
+          setTimeout(function () {
+            self.runDetection();
+          }, 5000);
         });
+      }).catch(function (err) {
+        setTimeout(function () {
+          self.runDetection();
+        }, 5000);
       });
     },
     verifyFaces: function verifyFaces() {
@@ -2271,9 +2290,13 @@ __webpack_require__.r(__webpack_exports__);
                   setTimeout(function () {
                     resolve();
                   }, 1000);
+                }).catch(function (err) {
+                  console.log(err);
                 });
               }
             });
+          }).catch(function (err) {
+            console.log(err);
           });
         };
 

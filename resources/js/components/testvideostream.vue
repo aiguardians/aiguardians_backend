@@ -30,12 +30,20 @@
                             setTimeout(function() {
                                 resolve();
                             }, 1000);
+                        }).catch(function(err) {
+                            console.log(err);
                         });
-                    }));
+                    })).catch(function(err) {
+                        console.log(err);
+                    });
                 }
                 p.then(_ => {
                     this.main();
+                }).catch(function(err) {
+                    console.log(err);
                 });
+            }).catch(function(err) {
+                console.log(err);
             });
         },
         methods: {
@@ -58,6 +66,8 @@
                         this.video.srcObject = stream;
                         this.drawVideo();
                         this.runDetection();
+                    }).catch(function(err) {
+                        console.log(err);
                     });
                 } else {
                   alert('getUserMedia() is not supported by your browser');
@@ -71,7 +81,16 @@
                         setTimeout(function() {
                             self.runDetection();
                         }, 5000);
+                    }).catch(function(err) {
+                        console.log(err);
+                        setTimeout(function() {
+                            self.runDetection();
+                        }, 5000);
                     });
+                }).catch(function(err) {
+                    setTimeout(function() {
+                        self.runDetection();
+                    }, 5000);
                 });
             },
             verifyFaces: function() {
@@ -99,9 +118,13 @@
                                     setTimeout(function() {
                                         resolve();
                                     }, 1000);
+                                }).catch(function(err) {
+                                    console.log(err);
                                 });
                             }
-                        }));
+                        })).catch(function(err) {
+                            console.log(err);
+                        });
                     }
                 }
                 return p;
