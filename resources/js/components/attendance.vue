@@ -123,7 +123,7 @@ export default {
                 let highc = 0;
                 let medc = 0;
                 tmp.emotions.forEach(function(item) {
-                    if (item.yaw<-15 || item.yaw>15) {
+                    if (item.yaw<-12 || item.yaw>12) {
                         medc++;
                     }
                     else {
