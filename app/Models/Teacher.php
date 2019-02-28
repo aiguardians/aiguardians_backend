@@ -48,6 +48,7 @@ class Teacher extends Model
         }
         return [
             'status' => 'OK',
+            'class' => 'schedule',
             'component' => 'schedule',
             'content' => $schedule
         ];
@@ -73,6 +74,7 @@ class Teacher extends Model
       }
       return [
           'status' => 'OK',
+          'class' => 'scheduleOneDay',
           'component' => 'schedule',
           'content' => $schedule
       ];
@@ -89,7 +91,7 @@ class Teacher extends Model
           }
           return [
               'status' => 'OK',
-              'classes' => 'specializationandgroup',
+              'classes' => 'scheduleOneDay',
               'component' => 'schedule',
               'content' => $schedule
           ];
@@ -102,7 +104,7 @@ class Teacher extends Model
         }
         return [
             'status' => 'OK',
-            'classes' => 'specializationandgroup',
+            'classes' => 'schedule',
             'component' => 'schedule',
             'content' => $schedule
         ];
@@ -121,6 +123,7 @@ class Teacher extends Model
       }
       return [
           'status' => 'OK',
+          'class' => 'schedule',
           'component' => 'schedule',
           'content' => $schedule
       ];

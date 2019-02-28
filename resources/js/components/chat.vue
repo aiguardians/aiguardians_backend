@@ -28,7 +28,7 @@
                 ],
                 commands: [
                     {label: 'Schedule', value: 'Give me the schedule'},
-                    {label: 'Function1', value: 'Function1'},
+                    {label: 'Deadlines', value: 'Give me deadlines'},
                     {label: 'Function1', value: 'Function1'},
                     {label: 'Function1', value: 'Function1'},
                     {label: 'Function1', value: 'Function1'},

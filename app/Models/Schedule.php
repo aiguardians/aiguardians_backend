@@ -99,6 +99,7 @@ class Schedule extends Model
       }
       return [
         'status' => 'OK',
+        'class' => 'scheduleOneDay',
         'component' => 'schedule',
         'content' => $schedule
       ];
@@ -124,6 +125,7 @@ class Schedule extends Model
       }
       return [
           'status' => 'OK',
+          'class' => 'schedule',
           'component' => 'schedule',
           'content' => $schedule
       ];

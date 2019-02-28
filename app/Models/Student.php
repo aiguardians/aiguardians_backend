@@ -46,6 +46,7 @@ class Student extends Model
         }
         return [
             'status' => 'OK',
+            'class' => 'schedule',
             'component' => 'schedule',
             'content' => $schedule
         ];
@@ -68,6 +69,7 @@ class Student extends Model
       }
       return [
           'status' => 'OK',
+          'class' => 'scheduleOneDay',
           'component' => 'schedule',
           'content' => $schedule
       ];

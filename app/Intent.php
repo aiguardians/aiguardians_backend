@@ -36,30 +36,79 @@ class Intent extends Model
     }
 
     public static function GetAttendance($entities){
-      $arr = [];
+        $arr = [];
       return 'need attendance';
     }
 
+    public static function GetDeadlinesForDay($day){
+      $courses = auth()->user()->student->groups[0]->courses;
+      $data = [];
+      foreach($courses as $course) {
+          $tasks = $course->tasks()->whereRaw("DAY(deadline)={$day} and deadline>=NOW()")->orderBy('deadline', 'ASC')->get();
+          foreach($tasks as $task) {
+              $data[$task->deadline->format('Y.m.d')][]=new \App\Http\Resources\api\TaskResource($task);
+          }
+      }
+      if(count($data)==0){
+        return [
+            'status' => 'OK',
+            'class' => 'msg msg-left',
+            'component' => 'default',
+            'content' =>"No Deadlines."
+        ];
+      }
+      return [
+          'status' => 'OK',
+          'class' => 'deadline'
+          'component' => 'deadline',
+          'content' => $data
+      ];
+    }
+
     public static function GetDeadlines($entities){
-      $arr = [];
-      return 'need deadlines';
+      if(isset($entities['Day'])){
+        $day = date('w',strtotime($entities['Day']->entity));
+        $next = date('d', strtotime('next '.date('l', strtotime("Sunday + {$day} days"))));
+        // return $next;
+        return self::GetDeadlinesForDay($next);
+      }
+      else{
+        $courses = auth()->user()->student->groups[0]->courses;
+        $data = [];
+        foreach($courses as $course) {
+            $tasks = $course->tasks()->where('deadline', '>', date('Y-m-d H:i:s'))->orderBy('deadline', 'ASC')->get();
+            foreach($tasks as $task) {
+                $data[$task->deadline->format('Y.m.d')][]=new \App\Http\Resources\api\TaskResource($task);
+            }
+        }
+        return [
+            'status' => 'OK',
+            // 'class' => 'deadline'
+            'component' => 'deadline',
+            'content' => $data
+        ];
+     }
     }
 
     public static function GetEmotions($entities){
-        $arr = [];
-        return 'need emotions';
+        if(auth()->user()->teacher){
+          return 'Need date and course name';
+        }
+        else{
+          return 'You do not have enough permission to see emotions state of students';
+        }
     }
 
 
-    public static function GetInformation($entities){
-      $arr = [];
-      return 'need deadlines';
-    }
-
-    public static function GetRecommendations($entities){
-      $arr = [];
-      return 'need recommendations';
-    }
+    // public static function GetInformation($entities){
+    //   $arr = [];
+    //   return 'need deadlines';
+    // }
+    //
+    // public static function GetRecommendations($entities){
+    //   $arr = [];
+    //   return 'need recommendations';
+    // }
 
     public static function GetSchedule($entities) {
         if (auth()->user()->student) {
@@ -97,7 +146,6 @@ class Intent extends Model
             else{
               if(isset($entities['person'])){
                 return auth()->user()->teacher->getTeacherSchedule($entities['person']->entity);
-                // return $entities['person']->entity;
               }
               if(isset($entities['Group']) && isset($entities['Specialization'])){
                 return \App\Models\Schedule::getScheduleByDayAndSpecialization(null,$entities['Specialization']->entity,$entities['Group']->entity);
