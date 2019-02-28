@@ -14,6 +14,7 @@
 <li><a href="{{ backpack_url('speciality') }}"><i class="fa fa-dashboard"></i> <span>Specialities</span></a></li>
 <li><a href="{{ backpack_url('group') }}"><i class="fa fa-dashboard"></i> <span>Groups</span></a></li>
 <li><a href="{{ backpack_url('course') }}"><i class="fa fa-dashboard"></i> <span>Courses</span></a></li>
+<li><a href="{{ backpack_url('task') }}"><i class="fa fa-dashboard"></i> <span>Tasks</span></a></li>
 <li><a href="{{ backpack_url('student') }}"><i class="fa fa-dashboard"></i> <span>Students</span></a></li>
 <li><a href="{{ backpack_url('teacher') }}"><i class="fa fa-dashboard"></i> <span>Teachers</span></a></li>
 <li><a href="{{ backpack_url('schedule') }}"><i class="fa fa-dashboard"></i> <span>Schedule</span></a></li>

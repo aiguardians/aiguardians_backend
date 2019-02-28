@@ -2,6 +2,7 @@
     <div>
         <video autoplay class="d-none"></video>
         <canvas id="canvas" width="640" height="480"></canvas>
+        <button class="btn btn-primary" @click="stopRecording">Stop</button>
     </div>
 </template>
 
@@ -11,10 +12,12 @@
         data: function() {
             return {
                 video: null,
+                file: null,
                 ctx: null,
                 faces: [],
                 group: null,
                 students: [],
+                recorder: null,
             };
         },
         mounted: function() {
@@ -29,26 +32,33 @@
                             this.students[i].cnt = 0;
                             setTimeout(function() {
                                 resolve();
-                            }, 1000);
-                        }).catch(function(err) {
-                            console.log(err);
+                            }, 0);
                         });
-                    })).catch(function(err) {
-                        console.log(err);
-                    });
+                    }));
                 }
                 p.then(_ => {
                     this.main();
-                }).catch(function(err) {
-                    console.log(err);
                 });
-            }).catch(function(err) {
-                console.log(err);
             });
         },
         methods: {
+            stopRecording: function() {
+                this.recorder.ondataavailable = e => {
+                    this.file = new File([e.data], 'test.webm', {type: 'video/webm'});
+                    let formData = new FormData();
+                    formData.append('file', this.file);
+                    axios.post( '/test/video', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }).then(function() {
+                      console.log('SUCCESS!!');
+                    });
+                };
+                this.recorder.stop();
+            },
             detectStudent: function(i) {
-                return this.sendDetectionRequest("detect", JSON.stringify({"url": window.location.origin + this.students[i].image}), 'json');
+                return this.sendDetectionRequest("detect", JSON.stringify({"url": "https://testaiguardians.azurewebsites.net" + this.students[i].image}), 'json');
             },
             getStudents: function() {
                 return axios.get('/api/group/' + this.$props.groupid + '/students');
@@ -63,34 +73,28 @@
                     };
                     navigator.mediaDevices.getUserMedia(constraints)
                     .then((stream) => {
+                        this.recorder = new MediaRecorder(stream, {
+                          mimeType: 'video/webm'
+                        });
+                        this.recorder.start();
                         this.video.srcObject = stream;
                         this.drawVideo();
                         this.runDetection();
-                    }).catch(function(err) {
-                        console.log(err);
                     });
                 } else {
                   alert('getUserMedia() is not supported by your browser');
                 }
             },
             runDetection: function() {
+                let self = this;
                 this.detectFaces().then(data => {
                     this.faces = data;
-                    this.verifyFaces().then(_ => {
-                        let self = this;
+                    this.verifyFaces()
+                    .then(function() {
                         setTimeout(function() {
                             self.runDetection();
-                        }, 5000);
-                    }).catch(function(err) {
-                        console.log(err);
-                        setTimeout(function() {
-                            self.runDetection();
-                        }, 5000);
+                        }, 0);
                     });
-                }).catch(function(err) {
-                    setTimeout(function() {
-                        self.runDetection();
-                    }, 5000);
                 });
             },
             verifyFaces: function() {
@@ -117,14 +121,10 @@
                                     }
                                     setTimeout(function() {
                                         resolve();
-                                    }, 1000);
-                                }).catch(function(err) {
-                                    console.log(err);
+                                    }, 0);
                                 });
                             }
-                        })).catch(function(err) {
-                            console.log(err);
-                        });
+                        }));
                     }
                 }
                 return p;
@@ -138,13 +138,13 @@
             },
             drawVideo: function() {
                 window.requestAnimationFrame(this.drawVideo);
-                this.ctx.beginPath();
-                this.ctx.font = "20px Arial";
                 this.ctx.drawImage(this.video, 0, 0);
                 this.drawDetectedStudents();
                 this.drawOtherStudents();
             },
             drawDetectedStudents: function() {
+                this.ctx.beginPath();
+                this.ctx.font = "20px Arial";
                 this.ctx.strokeStyle = "rgba(0, 255, 0, 0.7)";
                 this.ctx.fillStyle = "rgba(0, 255, 0, 0.7)";
                 for (let i=0;i<this.students.length;++i) {
@@ -156,11 +156,12 @@
                 this.ctx.stroke();
             },
             drawOtherStudents: function() {
+                this.ctx.beginPath();
                 this.ctx.strokeStyle = "rgba(255, 0, 0, 0.7)";
                 this.ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
                 for (let i=0;i<this.faces.length;++i) {
+                    if (this.faces[i].checked) continue;
                     let coords = this.faces[i].faceRectangle;
-                    if (this.faces[i].checked) return;
                     this.ctx.rect(coords.left, coords.top, coords.width, coords.height);
                 }
                 this.ctx.stroke();

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\CrudTrait;
 
-class Course extends Model
+class Task extends Model
 {
     use CrudTrait;
 
@@ -15,13 +15,13 @@ class Course extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'courses';
+    protected $table = 'tasks';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     // protected $guarded = ['id'];
-    protected $fillable = ['name', 'group_id', 'lecture_teacher_id', 'lab_teacher_id', 'practice_teacher_id', 'tmp_course_id'];
+    protected $fillable = ['course_id', 'name', 'description', 'deadline'];
     // protected $hidden = [];
-    // protected $dates = [];
+    protected $dates = ['deadline'];
 
     /*
     |--------------------------------------------------------------------------
@@ -34,30 +34,9 @@ class Course extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function group() {
-        return $this->belongsTo('App\Models\Group', 'group_id');
+    public function course() {
+        return $this->belongsTo('\App\Models\Course', 'course_id');
     }
-
-    public function lectureTeacher() {
-        return $this->belongsTo('App\Models\Teacher', 'lecture_teacher_id');
-    }
-
-    public function labTeacher() {
-        return $this->belongsTo('App\Models\Teacher', 'lab_teacher_id');
-    }
-
-    public function practiceTeacherId() {
-        return $this->belongsTo('App\Models\Teacher', 'practice_teacher_id');
-    }
-
-    public function schedule() {
-        return $this->hasMany('App\Models\Schedule', 'course_id');
-    }
-
-    public function tasks() {
-        return $this->hasMany('\App\Models\Task', 'course_id');
-    }
-
     /*
     |--------------------------------------------------------------------------
     | SCOPES
@@ -69,13 +48,22 @@ class Course extends Model
     | ACCESORS
     |--------------------------------------------------------------------------
     */
-    public function getName2Attribute() {
-        return $this->group->name." ".$this->name;
+    public function getRemainingAttribute() {
+        $now = new \DateTime();
+        $future_date = $this->deadline;
+        $interval = $future_date->diff($now);
+        return [
+            'days' => $interval->format('%a'),
+            'hours' => $interval->format('%h'),
+            'minutes' => $interval->format('%i'),
+        ];
     }
-
     /*
     |--------------------------------------------------------------------------
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    public function setDeadlineAttribute($value) {
+        $this->attributes['deadline'] = \Date::parse($value);
+    }
 }

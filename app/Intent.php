@@ -19,7 +19,7 @@ class Intent extends Model
     }
 
     public static function GetSchedule() {
-        if (auth()->user()->student && false) {
+        if (auth()->user()->student) {
             return auth()->user()->student->getSchedule();
         }
         else {

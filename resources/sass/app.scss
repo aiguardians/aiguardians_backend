@@ -9,7 +9,7 @@
 @import '~bootstrap/scss/bootstrap';
 
 html {
-    overflow: hidden;
+    // overflow: hidden;
 }
 
 body {
@@ -194,7 +194,7 @@ body {
 }
 
 .schedule-box {
-    width: 250px;
+    width: 180px;
     padding: 5px 10px;
     margin: 0px 5px 10px 5px;
     border: 1px solid lightgrey;
@@ -462,9 +462,80 @@ body {
     text-decoration: none;
     font-weight: bold;
 }
-span.menu{
+span.menu {
 	padding-left: 17px;
 }
 .right {
+    width: 100%;
     margin-left: 60px;
+}
+
+.d-course-box {
+
+}
+
+.d-course {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+}
+
+.d-deadline-box {
+
+}
+
+.d-deadline {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+}
+
+.dashboard {
+    color: grey;
+}
+
+.dashboard h4, h6 {
+    font-weight: bold;
+    color: black;
+}
+.t-orange {
+    color: orange;
+}
+
+.t-red {
+    color: red;
+}
+
+.t-green {
+    color: green;
+}
+
+.d-deadline-box h6 {
+    font-weight: bold;
+}
+
+.d-deadline-box h6 span {
+    font-weight: normal;
+    color: grey;
+}
+.d-color-black {
+    color: black;
+}
+.d-v-top {
+    vertical-align: top;
+}
+.d-v-right {
+    text-align: right;
+    max-width: 100px;
+}
+.dashboard h4 {
+    padding: 15px 0;
+}
+.change-link {
+    transform: translateY(-100%);
+    text-align: center;
 }

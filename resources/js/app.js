@@ -27,6 +27,7 @@ Vue.component('schedule', require('./components/schedule.vue').default);
 Vue.component('schedule2', require('./components/schedule2.vue').default);
 Vue.component('message', require('./components/message.vue').default);
 Vue.component('testvideostream', require('./components/testvideostream.vue').default);
+Vue.component('dashboard', require('./components/dashboard.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

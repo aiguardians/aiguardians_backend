@@ -98,6 +98,10 @@ class Schedule extends Model
     |--------------------------------------------------------------------------
     */
 
+    public function getStartTimeAttribute() {
+        return date('H:i', strtotime($this->attributes['start_time']));
+    }
+
     /*
     |--------------------------------------------------------------------------
     | MUTATORS
