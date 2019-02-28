@@ -108,9 +108,8 @@ Route::middleware(['auth'])->group(function() {
                                                           ->pluck('id')
                                                           ->toArray();
             $courses = \App\Models\Task::whereIn('course_id', $course_ids)->where('deadline', '>', date('Y-m-d H:i:s'))->orderBy('deadline', 'ASC')->get();
-            foreach($courses as $course) {
-                $tasks = $course->tasks()->where('deadline', '>', date('Y-m-d H:i:s'))->orderBy('deadline', 'ASC')->get();
-                $data[$task->deadline->format('Y.m.d')][]=new \App\Http\Resources\api\TaskResource($task);
+            foreach($courses as $task) {
+                $data[$task->deadline->format('Y.m.d')][]= new \App\Http\Resources\api\TaskResource($task);
             }
         }
         return response()->json($data);
