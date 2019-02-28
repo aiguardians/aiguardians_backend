@@ -40,7 +40,7 @@
                             this.students[i].cnt = 0;
                             setTimeout(function() {
                                 resolve();
-                            }, 100);
+                            }, 0);
                         });
                     }));
                 }
@@ -133,7 +133,7 @@
                         // console.log(self.result);
                         setTimeout(function() {
                             self.runDetection();
-                        }, 100);
+                        }, 0);
                     });
                 });
             },
@@ -161,7 +161,7 @@
                                     }
                                     setTimeout(function() {
                                         resolve();
-                                    }, 100);
+                                    }, 0);
                                 });
                             }
                         }));
