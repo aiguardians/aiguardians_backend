@@ -15,6 +15,7 @@ class CourseResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'group' => new \App\Http\Resources\api\GroupResource($this->group),
             'name' => $this->name,
         ];

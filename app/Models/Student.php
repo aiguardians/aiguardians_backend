@@ -64,7 +64,7 @@ class Student extends Model
         ];
       }
       foreach($items as $item) {
-          $schedule[$item->day][$item->start_time][]=new \App\Http\Resources\api\ScheduleResource($item);
+          $schedule[$item->start_time][]=new \App\Http\Resources\api\ScheduleResource($item);
       }
       return [
           'status' => 'OK',
@@ -140,6 +140,10 @@ class Student extends Model
             \Storage::disk($disk)->put($destination_path.'/'.$filename, $image->stream());
             // 3. Save the path to the database
             $this->attributes[$attribute_name] = $destination_path.'/'.$filename;
+        }
+        else
+        {
+            $this->uploadFileToDisk($value, $attribute_name, $disk, $destination_path);
         }
     }
 }

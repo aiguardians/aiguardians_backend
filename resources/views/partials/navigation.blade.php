@@ -7,7 +7,7 @@
     <a class="{{ $page=='dashboard'?'n-active':'' }}" href="/home">
         <li class="item-menu">
             <span class="">
-                <img src="/img/layout.svg" width="24"/>
+                <img src="/img/profile.svg" width="24"/>
             </span>
             <span class="menu">Панель управления</span>
         </li>
@@ -20,22 +20,16 @@
             <span class="menu">Расписание</span>
         </li>
     </a>
-    <a class="{{ $page=='emotion'?'n-active':'' }}" href="#">
-        <li class="item-menu">
-            <span class="">
-                <img src="/img/presentation.svg" width="24"/>
-            </span>
-            <span class="menu">Уровень Эмоции</span>
-        </li>
-    </a>
-    <a class="{{ $page=='attendance'?'n-active':'' }}" href="/home/attendance">
-        <li class="item-menu">
-            <span class="">
-                <img src="/img/profile.svg" width="24"/>
-            </span>
-            <span class="menu">Посещаемость</span>
-        </li>
-    </a>
+    @if(auth()->user()->teacher)
+        <a class="{{ $page=='attendance'?'n-active':'' }}" href="/home/attendance">
+            <li class="item-menu">
+                <span class="">
+                    <img src="/img/presentation.svg" width="24"/>
+                </span>
+                <span class="menu">Посещаемость</span>
+            </li>
+        </a>
+    @endif
 </ul>
 <ul class="n-bottom">
     <a href="#">
