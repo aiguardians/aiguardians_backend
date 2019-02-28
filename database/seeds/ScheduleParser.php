@@ -18,7 +18,7 @@ class ScheduleParser extends Seeder
      */
     public function run()
     {
-        $courses = [1];//, 2, 3, 4];
+        $courses = [2,3,4];//, 2, 3, 4];
         $coursesLink = "http://schedule.iitu.kz/rest/user/get_specialty.php?course=";
         foreach($courses as $course) {
             $link = $coursesLink.$course;

@@ -36,6 +36,8 @@ class Student extends Model
         });
     }
 
+
+
     public function getSchedule() {
         $course_ids = Course::select('id')->where('group_id', $this->groups[0]->id)->pluck('id')->toArray();
         $items = Schedule::whereIn('course_id', $course_ids)->orderBy('day', 'ASC')->orderBy('start_time', 'ASC')->orderBy('course_id', 'ASC')->get();
@@ -49,6 +51,27 @@ class Student extends Model
         ];
     }
 
+
+    public function getScheduleByDay($day){
+      $course_ids = Course::select('id')->where('group_id', $this->groups[0]->id)->pluck('id')->toArray();
+      $items = Schedule::where('day',$day)->whereIn('course_id', $course_ids)->orderBy('day', 'ASC')->orderBy('start_time', 'ASC')->orderBy('course_id', 'ASC')->get();
+      if (count($items) == 0){
+        return [
+            'status' => 'OK',
+            'class' => 'msg msg-left',
+            'component' => 'default',
+            'content' =>"There is no courses on ".date('l', strtotime("Sunday + {$day} days"))
+        ];
+      }
+      foreach($items as $item) {
+          $schedule[$item->day][$item->start_time][]=new \App\Http\Resources\api\ScheduleResource($item);
+      }
+      return [
+          'status' => 'OK',
+          'component' => 'schedule',
+          'content' => $schedule
+      ];
+    }
 
     /*
     |--------------------------------------------------------------------------

@@ -11,7 +11,8 @@
 |
 */
 Route::get('/test', function() {
-    return dd($courses);
+    return \App\Models\Student::find(1)->getScheduleByDayAndSpecialization(null,'SIS','1811');
+    // return date('w',strtotime('monday'));
 })->name('test');
 
 Route::post('/test/video', function() {
