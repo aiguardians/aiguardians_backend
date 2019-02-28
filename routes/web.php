@@ -109,7 +109,7 @@ Route::middleware(['auth'])->group(function() {
                                                           ->toArray();
             $courses = \App\Models\Task::whereIn('course_id', $course_ids)->where('deadline', '>', date('Y-m-d H:i:s'))->orderBy('deadline', 'ASC')->get();
             foreach($courses as $course) {
-                $data[]= new \App\Http\Resources\CourseResource($course);
+                $data[]= new \App\Http\Resources\api\CourseResource($course);
             }
         }
         return response()->json($data);
