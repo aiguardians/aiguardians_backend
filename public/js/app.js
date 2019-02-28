@@ -1899,8 +1899,8 @@ __webpack_require__.r(__webpack_exports__);
         label: 'Schedule',
         value: 'Give me the schedule'
       }, {
-        label: 'Function1',
-        value: 'Function1'
+        label: 'Deadlines',
+        value: 'Give me deadlines'
       }, {
         label: 'Function1',
         value: 'Function1'
