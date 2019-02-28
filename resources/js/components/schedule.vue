@@ -1,6 +1,6 @@
 <template>
     <div class="schedule">
-        <div v-for="(day, index) in days" class="schedule-day">
+        <div v-for="(day, index) in days" :class="['schedule-day', {'d-none': schedule[index+1]==undefined}]">
             <div class="d-flex justify-content-center"><h5>{{ day.name }}</h5></div>
             <div v-for="(items, start_time) in schedule[index+1]" :class="['schedule-box', {'current-lesson': items[0].time.current, 'next-lesson': items[0].time.next}]">
                 <div class="d-flex justify-content-between schedule-course">

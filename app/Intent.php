@@ -96,7 +96,7 @@ class Intent extends Model
           }
           return [
               'status' => 'OK',
-              // 'class' => 'deadline'
+              'class' => 'deadline',
               'component' => 'deadline',
               'content' => $data
           ];
