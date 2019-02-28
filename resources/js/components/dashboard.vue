@@ -2,7 +2,7 @@
 <div class="container-fluid py-4 dashboard">
     <div class="row">
         <div class="col-sm-4">
-            <h4> Личная информация </h4>
+            <h4> Personal information </h4>
             <div class="row">
                 <div class="col-6 col-sm-12 col-md-12 col-lg-6">
                     <img id="userimage" class="n-u-img" :src="this.$props.userimg"/>
@@ -67,7 +67,7 @@
                         </div>
                         <div class="d-inline-block d-v-top">
                             <div :class="['d-v-right', item.class]">
-                                осталось {{ item.remaining }}
+                                {{ item.remaining }} left
                             </div>
                         </div>
                     </div>

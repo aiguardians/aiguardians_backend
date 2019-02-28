@@ -1,8 +1,12 @@
 <template>
-    <div>
+    <div class="d-flex justify-content-center">
         <video autoplay class="d-none"></video>
-        <canvas id="canvas" width="640" height="480"></canvas>
-        <button class="btn btn-primary" @click="stopRecording">Stop</button>
+        <div class="d-flex">
+            <canvas id="canvas1" width="640" height="480"></canvas>
+            <div class="d-flex">
+                <button class="btn btn-success" style="border-radius: 0px;" @click="stopRecording">Stop</button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -79,7 +83,7 @@
 
             main: function() {
                 if (this.hasGetUserMedia()) {
-                    this.ctx = document.getElementById('canvas').getContext('2d');
+                    this.ctx = document.getElementById('canvas1').getContext('2d');
                     this.video = document.querySelector('video');
                     const constraints = {
                         video: true
@@ -126,7 +130,7 @@
                                 return item.faceAttributes;
                             }),
                         });
-                        console.log(self.result);
+                        // console.log(self.result);
                         setTimeout(function() {
                             self.runDetection();
                         }, 100);
@@ -145,7 +149,7 @@
                         p = p.then(_ => new Promise(resolve => {
                             if (this.faces[j].checked || this.students[i].coords) {
                                 resolve();
-                                console.log('continue');
+                                // console.log('continue');
                             }
                             else {
                                 this.verifyFace(i, j).then(data => {

@@ -1,7 +1,7 @@
 <template>
     <div :class="[classes]">
         <schedule v-if="message.component=='schedule'"></schedule>
-        <deadline v-if="message.component=='deadline'"></deadline>
+        <deadline v-else-if="message.component=='deadline'"></deadline>
         <span v-else>{{ message.content }}</span>
     </div>
 </template>

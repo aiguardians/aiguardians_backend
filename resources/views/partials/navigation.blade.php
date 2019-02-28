@@ -9,7 +9,7 @@
             <span class="">
                 <img src="/img/profile.svg" width="24"/>
             </span>
-            <span class="menu">Панель управления</span>
+            <span class="menu">Control Panel</span>
         </li>
     </a>
     <a class="{{ $page=='schedule'?'n-active':'' }}" href="/home/schedule">
@@ -17,7 +17,7 @@
             <span class="">
                 <img src="/img/calendar.svg" width="24"/>
             </span>
-            <span class="menu">Расписание</span>
+            <span class="menu">Schedule</span>
         </li>
     </a>
     @if(auth()->user()->teacher)
@@ -26,7 +26,7 @@
                 <span class="">
                     <img src="/img/presentation.svg" width="24"/>
                 </span>
-                <span class="menu">Посещаемость</span>
+                <span class="menu">Attendance</span>
             </li>
         </a>
     @endif
@@ -37,7 +37,7 @@
             <span class="">
                 <img src="/img/settings-1.svg" width="24"/>
             </span>
-            <span class="menu">Настройки</span>
+            <span class="menu">Settings</span>
         </li>
     </a>
     <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
@@ -45,7 +45,7 @@
             <span class="">
                 <img src="/img/logout.svg" width="24"/>
             </span>
-            <span class="menu">Выйти</span>
+            <span class="menu">Logout</span>
         </li>
     </a>
 </ul>
