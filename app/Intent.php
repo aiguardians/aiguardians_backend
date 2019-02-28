@@ -59,7 +59,7 @@ class Intent extends Model
             'status' => 'OK',
             'class' => 'msg msg-left',
             'component' => 'default',
-            'content' =>"No Deadlines."
+            'content' =>"You are lucky! There is no any deadlines!!!"
         ];
       }
       return [
@@ -71,29 +71,73 @@ class Intent extends Model
     }
 
     public static function GetDeadlines($entities){
-      if(isset($entities['Day'])){
-        $day = date('w',strtotime($entities['Day']->entity));
-        $next = date('d', strtotime('next '.date('l', strtotime("Sunday + {$day} days"))));
-        // return $next;
-        return self::GetDeadlinesForDay($next);
-      }
-      else{
-        $courses = auth()->user()->student->groups[0]->courses;
-        $data = [];
-        foreach($courses as $course) {
-            $tasks = $course->tasks()->where('deadline', '>', date('Y-m-d H:i:s'))->orderBy('deadline', 'ASC')->get();
-            foreach($tasks as $task) {
-                $data[$task->deadline->format('Y.m.d')][]=new \App\Http\Resources\api\TaskResource($task);
-            }
+      if(auth()->user()->student){
+        if(isset($entities['Day'])){
+          $day = date('w',strtotime($entities['Day']->entity));
+          $next = date('d', strtotime('next '.date('l', strtotime("Sunday + {$day} days"))));
+          return self::GetDeadlinesForDay($next);
         }
-        return [
-            'status' => 'OK',
-            // 'class' => 'deadline'
-            'component' => 'deadline',
-            'content' => $data
-        ];
+        else{
+          $courses = auth()->user()->student->groups[0]->courses;
+          $data = [];
+          foreach($courses as $course) {
+              $tasks = $course->tasks()->where('deadline', '>', date('Y-m-d H:i:s'))->orderBy('deadline', 'ASC')->get();
+              foreach($tasks as $task) {
+                  $data[$task->deadline->format('Y.m.d')][]=new \App\Http\Resources\api\TaskResource($task);
+              }
+          }
+          if(count($data) == 0){
+            return [
+              'status' => 'OK',
+              'class' => 'msg msg-left',
+              'component' => 'default',
+                'content' => 'You are lucky! There is no any deadlines!!!'
+            ];
+          }
+          return [
+              'status' => 'OK',
+              // 'class' => 'deadline'
+              'component' => 'deadline',
+              'content' => $data
+          ];
+     }
+     }
+     else{
+       if(isset($entities['Day'])){
+         $day = date('w',strtotime($entities['Day']->entity));
+         $next = date('d', strtotime('next '.date('l', strtotime("Sunday + {$day} days"))));
+         return self::GetDeadlinesForDay($next);
+       }
+       else{
+         $courses = \App\Models\Course::select('id')->where('lecture_teacher_id', auth()->user()->teacher->id)
+                                                     ->orWhere('lab_teacher_id', auth()->user()->teacher->id)
+                                                     ->orWhere('practice_teacher_id', auth()->user()->teacher->id)
+                                                     ->get();
+         $data = [];
+         foreach($courses as $course) {
+             $tasks = $course->tasks()->where('deadline', '>', date('Y-m-d H:i:s'))->orderBy('deadline', 'ASC')->get();
+             foreach($tasks as $task) {
+                 $data[$task->deadline->format('Y.m.d')][]=new \App\Http\Resources\api\TaskResource($task);
+             }
+         }
+         if(count($data) == 0){
+           return [
+             'status' => 'OK',
+             'class' => 'msg msg-left',
+             'component' => 'default',
+               'content' => 'There is no any deadlines'
+           ];
+         }
+         return [
+             'status' => 'OK',
+             // 'class' => 'deadline'
+             'component' => 'deadline',
+             'content' => $data
+         ];
+       }
      }
     }
+
 
     public static function GetEmotions($entities){
         if(auth()->user()->teacher){
