@@ -14,7 +14,7 @@ class ChatController extends Controller
 
     public function query(Request $request) {
         $query = $request->content;
-        $url = "https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/c352ce32-48a9-453a-9be0-6035f0d180d2?spellCheck=true&bing-spell-check-subscription-key=%7BYOUR_BING_KEY_HERE%7D&verbose=true&timezoneOffset=-360&subscription-key=ba7fe1dee51d4b48a73f83a96a6ce708&q=".urlencode($query);
+        $url = "https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/c352ce32-48a9-453a-9be0-6035f0d180d2?verbose=true&timezoneOffset=-360&subscription-key=8aa615ff2816412e898f1bd5b566a67f&q=".urlencode($query);
         $response = file_get_contents($url);
         return response()->json([
             'luis' => json_decode($response),
