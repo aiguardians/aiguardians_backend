@@ -565,3 +565,11 @@ span.menu {
     border: 1px solid lightgrey;
     border-radius: 5px;
 }
+
+.a-active {
+    box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.5);
+}
+#video {
+    width: 100%;
+    padding: 0 50px;
+}

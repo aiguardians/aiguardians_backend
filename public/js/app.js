@@ -1800,13 +1800,33 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       courses: [],
       selectedday: null,
-      selectedcourse: null
+      selectedcourse: null,
+      groups: [],
+      video: [],
+      res: [],
+      canvasData: []
     };
   },
   mounted: function mounted() {
@@ -1821,9 +1841,21 @@ __webpack_require__.r(__webpack_exports__);
         self.pickDate(moment__WEBPACK_IMPORTED_MODULE_0___default()(String(date)).format('DD-MM-YYYY'));
       });
     });
+    axios.get('/video').then(function (response) {
+      var v = document.getElementById('video');
+      v.src = response.data;
+      console.log(response.data);
+    });
+    axios.get('/emotions').then(function (response) {
+      _this.res = response.data;
+
+      _this.drawCanvas();
+    });
   },
   methods: {
     pickDate: function pickDate(date) {
+      var _this2 = this;
+
       this.selectedday = date;
 
       if (!this.selectedcourse) {
@@ -1831,13 +1863,16 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       axios.post('/attendance', {
-        'date': this.date,
-        'course': this.course
+        'date': this.selectedday,
+        'course': this.selectedcourse
       }).then(function (response) {
-        console.log(response);
+        _this2.groups = response.data;
+        console.log(_this2.groups);
       });
     },
     selectCourse: function selectCourse(e) {
+      var _this3 = this;
+
       this.selectedcourse = e.target.getAttribute('courseid');
 
       if (!this.selectedday) {
@@ -1845,11 +1880,36 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       axios.post('/attendance', {
-        'date': this.date,
-        'course': this.course
+        'date': this.selectedday,
+        'course': this.selectedcourse
       }).then(function (response) {
-        console.log(response);
+        _this3.groups = response.data;
+        console.log(_this3.groups);
       });
+    },
+    drawCanvas: function drawCanvas() {
+      var maxv = 0;
+      var self = this;
+      this.res.forEach(function (item) {
+        maxv = Math.max(item.detected, maxv);
+      });
+      this.res.forEach(function (tmp) {
+        var lowc = 0;
+        var highc = 0;
+        var medc = 0;
+        tmp.emotions.forEach(function (item) {
+          if (item.yaw < -15 || item.yaw > 15) {
+            medc++;
+          } else {
+            highc++;
+          }
+
+          lowc += maxv - item.detected;
+        });
+        self.canvasData.push(100 * (highc * 1 + medc * 0.5) / maxv);
+      });
+      console.log(this.canvasData);
+      console.log(this.res);
     }
   }
 });
@@ -2390,9 +2450,13 @@ __webpack_require__.r(__webpack_exports__);
       file: null,
       ctx: null,
       faces: [],
+      faces_old: [],
       group: null,
       students: [],
-      recorder: null
+      students_old: [],
+      recorder: null,
+      result: [],
+      stop: false
     };
   },
   mounted: function mounted() {
@@ -2411,7 +2475,7 @@ __webpack_require__.r(__webpack_exports__);
               _this.students[i].cnt = 0;
               setTimeout(function () {
                 resolve();
-              }, 0);
+              }, 100);
             });
           });
         });
@@ -2422,6 +2486,8 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       p.then(function (_) {
+        _this.students_old = _this.students;
+
         _this.main();
       });
     });
@@ -2431,11 +2497,19 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       this.recorder.ondataavailable = function (e) {
+        _this2.stop = true;
         _this2.file = new File([e.data], 'test.webm', {
           type: 'video/webm'
         });
         var formData = new FormData();
+        formData.append('result', JSON.stringify(_this2.result));
         formData.append('file', _this2.file);
+        formData.append('attendance', JSON.stringify(_this2.students.map(function (item) {
+          return {
+            id: item.id,
+            cnt: item.cnt
+          };
+        })));
         axios.post('/test/video', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -2489,9 +2563,35 @@ __webpack_require__.r(__webpack_exports__);
         _this4.faces = data;
 
         _this4.verifyFaces().then(function () {
+          if (self.stop) {
+            return;
+          }
+
+          self.students_old = self.students.map(function (item) {
+            return {
+              coords: item.coords
+            };
+          });
+          self.faces_old = self.faces.map(function (item) {
+            return {
+              checked: item.checked,
+              faceRectangle: item.faceRectangle
+            };
+          });
+          self.result.push({
+            time: self.video.currentTime,
+            detected: self.faces.length,
+            verified: self.students.map(function (item) {
+              return item.id;
+            }),
+            emotions: self.faces.map(function (item) {
+              return item.faceAttributes;
+            })
+          });
+          console.log(self.result);
           setTimeout(function () {
             self.runDetection();
-          }, 0);
+          }, 100);
         });
       });
     },
@@ -2525,7 +2625,7 @@ __webpack_require__.r(__webpack_exports__);
 
                   setTimeout(function () {
                     resolve();
-                  }, 0);
+                  }, 100);
                 });
               }
             });
@@ -2553,13 +2653,19 @@ __webpack_require__.r(__webpack_exports__);
     },
     detectFaces: function detectFaces() {
       console.log('screen shot');
-      return this.sendDetectionRequest("detect", this.makeblob(this.ctx.canvas.toDataURL()), 'octet-stream');
+      var data = this.makeblob(this.ctx.canvas.toDataURL());
+      return this.sendDetectionRequest("detect", data, 'octet-stream');
     },
     drawVideo: function drawVideo() {
       window.requestAnimationFrame(this.drawVideo);
       this.ctx.drawImage(this.video, 0, 0);
-      this.drawDetectedStudents();
+
+      if (this.stop) {
+        return;
+      }
+
       this.drawOtherStudents();
+      this.drawDetectedStudents();
     },
     drawDetectedStudents: function drawDetectedStudents() {
       this.ctx.beginPath();
@@ -2568,8 +2674,8 @@ __webpack_require__.r(__webpack_exports__);
       this.ctx.fillStyle = "rgba(0, 255, 0, 0.7)";
 
       for (var i = 0; i < this.students.length; ++i) {
-        if (!this.students[i].coords) continue;
-        var coords = this.students[i].coords;
+        if (!this.students_old[i].coords) continue;
+        var coords = this.students_old[i].coords;
         this.ctx.rect(coords.left, coords.top, coords.width, coords.height);
         this.ctx.fillText(this.students[i].first_name + ' ' + this.students[i].last_name, coords.left, coords.top - 5);
       }
@@ -2581,9 +2687,9 @@ __webpack_require__.r(__webpack_exports__);
       this.ctx.strokeStyle = "rgba(255, 0, 0, 0.7)";
       this.ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
 
-      for (var i = 0; i < this.faces.length; ++i) {
-        if (this.faces[i].checked) continue;
-        var coords = this.faces[i].faceRectangle;
+      for (var i = 0; i < this.faces_old.length; ++i) {
+        if (this.faces_old[i].checked) continue;
+        var coords = this.faces_old[i].faceRectangle;
         this.ctx.rect(coords.left, coords.top, coords.width, coords.height);
       }
 
@@ -2592,7 +2698,8 @@ __webpack_require__.r(__webpack_exports__);
     sendDetectionRequest: function sendDetectionRequest(action, data, contentType) {
       var params = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {
         returnFaceId: "true",
-        returnFaceLandmarks: "false"
+        returnFaceLandmarks: "false",
+        returnFaceAttributes: "headPose,emotion"
       };
       return $.ajax({
         url: "https://westus.api.cognitive.microsoft.com/face/v1.0/" + action + "?" + $.param(params),
@@ -66067,7 +66174,10 @@ var render = function() {
                   return _c(
                     "div",
                     {
-                      staticClass: "a-course",
+                      class: [
+                        "a-course",
+                        { "a-active": _vm.selectedcourse == course.id }
+                      ],
                       attrs: { courseid: course.id },
                       on: { click: _vm.selectCourse }
                     },
@@ -66084,7 +66194,36 @@ var render = function() {
               2
             ),
             _vm._v(" "),
-            _vm._m(0)
+            _c("div", { staticClass: "col-sm-8" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "div",
+                _vm._l(_vm.groups, function(group, name) {
+                  return _c("div", [
+                    _vm._v(
+                      "\n                                " +
+                        _vm._s(name) +
+                        "\n                                "
+                    ),
+                    _c(
+                      "div",
+                      _vm._l(group, function(s) {
+                        return _c("div", [
+                          _vm._v(
+                            "\n                                        " +
+                              _vm._s(s.student.first_name) +
+                              "\n                                    "
+                          )
+                        ])
+                      }),
+                      0
+                    )
+                  ])
+                }),
+                0
+              )
+            ])
           ])
         ]),
         _vm._v(" "),
@@ -66098,9 +66237,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-sm-8" }, [
-      _c("div", {}, [_c("div", { attrs: { id: "calendar" } })])
-    ])
+    return _c("div", {}, [_c("div", { attrs: { id: "calendar" } })])
   },
   function() {
     var _vm = this
@@ -66113,7 +66250,13 @@ var staticRenderFns = [
             _vm._v(
               "\n                            Video Analysis\n                        "
             )
-          ])
+          ]),
+          _vm._v(" "),
+          _c("div", [
+            _c("video", { attrs: { id: "video", src: "", controls: "" } })
+          ]),
+          _vm._v(" "),
+          _c("div", [_c("canvas", { attrs: { id: "canvas" } })])
         ])
       ])
     ])

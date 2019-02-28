@@ -15,9 +15,13 @@
                 file: null,
                 ctx: null,
                 faces: [],
+                faces_old: [],
                 group: null,
                 students: [],
+                students_old: [],
                 recorder: null,
+                result: [],
+                stop: false,
             };
         },
         mounted: function() {
@@ -32,11 +36,12 @@
                             this.students[i].cnt = 0;
                             setTimeout(function() {
                                 resolve();
-                            }, 0);
+                            }, 100);
                         });
                     }));
                 }
                 p.then(_ => {
+                    this.students_old = this.students;
                     this.main();
                 });
             });
@@ -44,9 +49,17 @@
         methods: {
             stopRecording: function() {
                 this.recorder.ondataavailable = e => {
+                    this.stop = true;
                     this.file = new File([e.data], 'test.webm', {type: 'video/webm'});
                     let formData = new FormData();
+                    formData.append('result', JSON.stringify(this.result));
                     formData.append('file', this.file);
+                    formData.append('attendance', JSON.stringify(this.students.map(function(item) {
+                        return {
+                            id: item.id,
+                            cnt: item.cnt
+                        };
+                    })));
                     axios.post( '/test/video', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
@@ -91,9 +104,32 @@
                     this.faces = data;
                     this.verifyFaces()
                     .then(function() {
+                        if (self.stop) {
+                            return;
+                        }
+                        self.students_old = self.students.map(function(item) {
+                            return {coords: item.coords};
+                        });
+                        self.faces_old = self.faces.map(function(item) {
+                            return {
+                                checked: item.checked,
+                                faceRectangle: item.faceRectangle,
+                            };
+                        });
+                        self.result.push({
+                            time: self.video.currentTime,
+                            detected: self.faces.length,
+                            verified: self.students.map(function(item) {
+                                return item.id;
+                            }),
+                            emotions: self.faces.map(function(item) {
+                                return item.faceAttributes;
+                            }),
+                        });
+                        console.log(self.result);
                         setTimeout(function() {
                             self.runDetection();
-                        }, 0);
+                        }, 100);
                     });
                 });
             },
@@ -121,7 +157,7 @@
                                     }
                                     setTimeout(function() {
                                         resolve();
-                                    }, 0);
+                                    }, 100);
                                 });
                             }
                         }));
@@ -134,13 +170,17 @@
             },
             detectFaces: function() {
                 console.log('screen shot');
-                return this.sendDetectionRequest("detect", this.makeblob(this.ctx.canvas.toDataURL()), 'octet-stream');
+                let data = this.makeblob(this.ctx.canvas.toDataURL());
+                return this.sendDetectionRequest("detect", data, 'octet-stream');
             },
             drawVideo: function() {
                 window.requestAnimationFrame(this.drawVideo);
                 this.ctx.drawImage(this.video, 0, 0);
-                this.drawDetectedStudents();
+                if (this.stop) {
+                    return;
+                }
                 this.drawOtherStudents();
+                this.drawDetectedStudents();
             },
             drawDetectedStudents: function() {
                 this.ctx.beginPath();
@@ -148,8 +188,8 @@
                 this.ctx.strokeStyle = "rgba(0, 255, 0, 0.7)";
                 this.ctx.fillStyle = "rgba(0, 255, 0, 0.7)";
                 for (let i=0;i<this.students.length;++i) {
-                    if (!this.students[i].coords) continue;
-                    let coords = this.students[i].coords;
+                    if (!this.students_old[i].coords) continue;
+                    let coords = this.students_old[i].coords;
                     this.ctx.rect(coords.left, coords.top, coords.width, coords.height);
                     this.ctx.fillText(this.students[i].first_name + ' ' + this.students[i].last_name, coords.left, coords.top-5);
                 }
@@ -159,14 +199,14 @@
                 this.ctx.beginPath();
                 this.ctx.strokeStyle = "rgba(255, 0, 0, 0.7)";
                 this.ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
-                for (let i=0;i<this.faces.length;++i) {
-                    if (this.faces[i].checked) continue;
-                    let coords = this.faces[i].faceRectangle;
+                for (let i=0;i<this.faces_old.length;++i) {
+                    if (this.faces_old[i].checked) continue;
+                    let coords = this.faces_old[i].faceRectangle;
                     this.ctx.rect(coords.left, coords.top, coords.width, coords.height);
                 }
                 this.ctx.stroke();
             },
-            sendDetectionRequest: function(action, data, contentType, params={returnFaceId: "true", returnFaceLandmarks: "false"}) {
+            sendDetectionRequest: function(action, data, contentType, params={returnFaceId: "true", returnFaceLandmarks: "false", returnFaceAttributes: "headPose,emotion"}) {
                 return $.ajax({
                     url: "https://westus.api.cognitive.microsoft.com/face/v1.0/"+action+"?" + $.param(params),
                     beforeSend: function(xhrObj) {

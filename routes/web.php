@@ -11,12 +11,30 @@
 |
 */
 Route::get('/test', function() {
-    return \App\Models\Student::find(1)->getScheduleByDayAndSpecialization(null,'SIS','1811');
-    // return date('w',strtotime('monday'));
+
 })->name('test');
 
 Route::post('/test/video', function() {
-    return dd(request()->file->store('videos', 'uploads'));
+    $schedule_id = 120;
+    $attendance = json_decode(request()->attendance);
+    $data = json_decode(request()->result);
+    foreach($attendance as $item) {
+        if ($item->cnt==0) {
+            continue;
+        }
+        $t = new \App\Models\Attendance;
+        $t->student_id = $item->id;
+        $t->schedule_id = $schedule_id;
+        $t->created_at = "2019-03-05 21:29:55";
+        $t->save();
+    }
+    $e = new \App\Models\Emotion;
+
+    $e->video = request()->file;
+    $e->data = $data;
+    $e->schedule_id = $schedule_id;
+    $e->save();
+    return "OK";
 });
 
 
@@ -24,8 +42,23 @@ Route::post('/test/video', function() {
 
 Route::middleware(['auth'])->group(function() {
     Route::post('/attendance', function() {
-        return dd(request()->date);
+        $schedules = \App\Models\Course::findOrFail(request()->course)->schedule()->where('day', date('w', strtotime(request()->date)))->get();
+        $res = [];
+        foreach($schedules as $s) {
+            $data = \App\Models\Attendance::where('schedule_id', $s->id)->get();//->whereRaw("DATE_FORMAT(created_at, '%Y-%m-%d')=".date('Y-m-d', strtotime(request()->date)))
+            foreach($data as $item) {
+                $res[$s->course->group->name][] = new \App\Http\Resources\api\AttendanceResource($item);
+            }
+        }
+        return response()->json($res);
     });
+    Route::get('/video', function() {
+        return \App\Models\Emotion::first()->video;
+    });
+    Route::get('/emotions', function() {
+        return \App\Models\Emotion::first()->data;
+    });
+
     Route::post('/set/image', function() {
         if (auth()->user()->student) {
             auth()->user()->student->image = request()->image;
