@@ -36,8 +36,13 @@ class Intent extends Model
     }
 
     public static function GetAttendance($entities){
-        $arr = [];
-      return 'need attendance';
+        $message = 'Attendance is already checked. Please, visit Profile to see the analysis of emotion.';
+        return [
+            'status' => 'OK',
+            'class' => 'msg msg-left',
+            'component' => 'default',
+            'content' =>$message
+        ];
     }
 
     public static function GetDeadlinesForDay($day){
@@ -59,7 +64,7 @@ class Intent extends Model
       }
       return [
           'status' => 'OK',
-          'class' => 'deadline'
+          'class' => 'deadline',
           'component' => 'deadline',
           'content' => $data
       ];
@@ -123,7 +128,7 @@ class Intent extends Model
           }
           else {
             if(isset($entities['Group']) && isset($entities['Specialization'])){
-              return auth()->user()->student->getScheduleByDayAndSpecialization(null,$entities['Specialization']->entity,$entities['Group']->entity);
+              return \App\Models\Schedule::getScheduleByDayAndSpecialization(null,$entities['Specialization']->entity,$entities['Group']->entity);
             }
             if(isset($entities['person'])){
                 return \App\Models\Schedule::getTeacherSchedule($entities['person']->entity);

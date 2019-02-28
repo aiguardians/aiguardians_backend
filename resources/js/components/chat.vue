@@ -27,11 +27,11 @@
                     {content: 'How can i help you?', 'class': 'msg msg-left'},
                 ],
                 commands: [
-                    {label: 'Schedule', value: 'Give me the schedule'},
-                    {label: 'Deadlines', value: 'Give me deadlines'},
-                    {label: 'Function1', value: 'Function1'},
-                    {label: 'Function1', value: 'Function1'},
-                    {label: 'Function1', value: 'Function1'},
+                    {label: 'Get Schedule', value: 'Give me the schedule'},
+                    {label: 'Deadlines', value: 'Show me deadlines'},
+                    {label: 'SIS-1811', value: 'Show me schedule of sis 1811 for today?'},
+                    {label: 'Lessons of Mr. William', value: 'Show me schedule of William on Tuesday'},
+                    {label: 'Attendance', value: 'check attendance'},
                 ],
             };
         },
