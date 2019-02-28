@@ -1890,6 +1890,7 @@ __webpack_require__.r(__webpack_exports__);
     drawCanvas: function drawCanvas() {
       var maxv = 0;
       var self = this;
+      var duration = this.res[this.res.length - 1].time;
       this.res.forEach(function (item) {
         maxv = Math.max(item.detected, maxv);
       });
@@ -1908,8 +1909,29 @@ __webpack_require__.r(__webpack_exports__);
         });
         self.canvasData.push(100 * (highc * 1 + medc * 0.5) / maxv);
       });
-      console.log(this.canvasData);
-      console.log(this.res);
+      var video = document.getElementById('video');
+      var ctx = document.getElementById('canvas').getContext('2d');
+      var width = ctx.canvas.width - 20;
+      var height = ctx.canvas.height - 10;
+      var len = width / duration;
+      ctx.beginPath();
+      ctx.strokeStyle = "purple";
+      ctx.moveTo(10, height);
+      console.log(self.canvasData);
+
+      for (var i = 0; i < self.canvasData.length; ++i) {
+        console.log(10 + (1 + i) * len, height - this.canvasData[i] * height / 100); // ctx.lineTo((10+i)*len, 10+self.canvasData[i]*height);
+
+        ctx.lineTo(10 + (1 + i) * len, height - this.canvasData[i] * height / 100);
+      }
+
+      ctx.lineTo(width, height);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.strokeStyle = "lightgrey";
+      ctx.moveTo(0, height + 10);
+      ctx.lineTo(width + 20, height + 10);
+      ctx.stroke();
     }
   }
 });
@@ -1956,20 +1978,20 @@ __webpack_require__.r(__webpack_exports__);
         'class': 'msg msg-left'
       }],
       commands: [{
-        label: 'Schedule',
+        label: 'Get Schedule',
         value: 'Give me the schedule'
       }, {
         label: 'Deadlines',
-        value: 'Give me deadlines'
+        value: 'Show me deadlines'
       }, {
-        label: 'Function1',
-        value: 'Function1'
+        label: 'SIS-1811',
+        value: 'Show me schedule of sis 1811 for today?'
       }, {
-        label: 'Function1',
-        value: 'Function1'
+        label: 'Lessons of Mr. William',
+        value: 'Show me schedule of William on Tuesday'
       }, {
-        label: 'Function1',
-        value: 'Function1'
+        label: 'Attendance',
+        value: 'check attendance'
       }]
     };
   },

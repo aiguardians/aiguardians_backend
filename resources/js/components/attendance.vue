@@ -114,6 +114,7 @@ export default {
         drawCanvas: function() {
             let maxv = 0;
             let self = this;
+            let duration = this.res[this.res.length-1].time;
             this.res.forEach(function(item) {
                 maxv = Math.max(item.detected, maxv);
             });
@@ -132,8 +133,27 @@ export default {
                 });
                 self.canvasData.push(100*(highc*1+medc*0.5)/maxv);
             });
-            console.log(this.canvasData);
-            console.log(this.res);
+            let video = document.getElementById('video');
+            let ctx = document.getElementById('canvas').getContext('2d');
+            let width = ctx.canvas.width-20;
+            let height = ctx.canvas.height-10;
+            let len = width/duration;
+            ctx.beginPath();
+            ctx.strokeStyle="purple";
+            ctx.moveTo(10, height);
+            console.log(self.canvasData);
+            for(let i =0;i<self.canvasData.length;++i) {
+                console.log(10+(1+i)*len, height-this.canvasData[i]*height/100);
+                // ctx.lineTo((10+i)*len, 10+self.canvasData[i]*height);
+                ctx.lineTo(10+(1+i)*len, height-this.canvasData[i]*height/100);
+            }
+            ctx.lineTo(width, height);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.strokeStyle="lightgrey";
+            ctx.moveTo(0, height+10);
+            ctx.lineTo(width+20, height+10);
+            ctx.stroke();
         },
     },
 }
