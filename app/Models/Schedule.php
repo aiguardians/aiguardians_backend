@@ -32,6 +32,104 @@ class Schedule extends Model
         return $this->belongsTo('App\Models\Course', 'course_id');
     }
 
+    public static function getScheduleByDayAndSpecialization($day, $specialization, $group) {
+      $group_id = Group::where('name', $specialization.'-'.$group)->firstOrFail()->id;
+      if(!isset($group_id)){
+        return [
+            'status' => 'OK',
+            'class' => 'msg msg-left',
+            'component' => 'default',
+            'content' =>"There is no such group ".$specialization.'-'.$group
+        ];
+      }
+        if (isset($day)){
+          $course_ids = Course::select('id')->where('group_id', $group_id)->pluck('id')->toArray();
+          $items = Schedule::where('day', $day)->whereIn('course_id', $course_ids)->orderBy('day', 'ASC')->orderBy('start_time', 'ASC')->orderBy('course_id', 'ASC')->get();
+          if(count($items) == 0){
+            return [
+                'status' => 'OK',
+                'class' => 'msg msg-left',
+                'component' => 'default',
+                'content' =>"No classes on ".$day
+            ];
+          }
+          foreach($items as $item) {
+              $schedule[$item->day][$item->start_time][]=new \App\Http\Resources\api\ScheduleResource($item);
+          }
+          return [
+              'status' => 'OK',
+              'classes' => 'specializationandgroup',
+              'component' => 'schedule',
+              'content' => $schedule
+          ];
+      }
+      else{
+        $course_ids = Course::select('id')->where('group_id', $group_id)->pluck('id')->toArray();
+        $items = Schedule::whereIn('course_id', $course_ids)->orderBy('day', 'ASC')->orderBy('start_time', 'ASC')->orderBy('course_id', 'ASC')->get();
+
+        foreach($items as $item) {
+            $schedule[$item->day][$item->start_time][]=new \App\Http\Resources\api\ScheduleResource($item);
+        }
+        return [
+            'status' => 'OK',
+            'classes' => 'specializationandgroup',
+            'component' => 'schedule',
+            'content' => $schedule
+        ];
+      }
+    }
+
+    public static function getScheduleOfTeacherAtParticularDay($first_name, $day){
+      $teacher_id = Teacher::select('id')->where('first_name', $first_name)->firstOrFail()->id;
+      if(!isset($teacher_id)){
+        return [
+          'status' => 'OK',
+          'class' => 'msg msg-left',
+          'component' => 'default',
+          'content' =>"There is no teacher ".$first_name
+        ];
+      }
+      $course_ids = \App\Models\Course::select('id')->where('lab_teacher_id', $teacher_id)
+                                                    ->orWhere('practice_teacher_id', $teacher_id)
+                                                    ->pluck('id')
+                                                    ->toArray();
+      $items = Schedule::where('day', $day)->whereIn('course_id', $course_ids)->orderBy('day', 'ASC')->orderBy('start_time', 'ASC')->orderBy('course_id', 'ASC')->get();
+      foreach($items as $item) {
+        $schedule[$item->day][$item->start_time][]=new \App\Http\Resources\api\ScheduleResource($item);
+      }
+      return [
+        'status' => 'OK',
+        'component' => 'schedule',
+        'content' => $schedule
+      ];
+    }
+
+    public static function getTeacherSchedule($first_name){
+      $teacher_id = Teacher::select('id')->where('first_name', $first_name)->firstOrFail()->id;
+      if(!isset($teacher_id)){
+        return [
+          'status' => 'OK',
+          'class' => 'msg msg-left',
+          'component' => 'default',
+          'content' =>"There is no teacher ".$first_name
+        ];
+      }
+      $course_ids = \App\Models\Course::select('id')->where('lab_teacher_id', $teacher_id)
+                                                    ->orWhere('practice_teacher_id', $teacher_id)
+                                                    ->pluck('id')
+                                                    ->toArray();
+      $items = Schedule::whereIn('course_id', $course_ids)->orderBy('day', 'ASC')->orderBy('start_time', 'ASC')->orderBy('course_id', 'ASC')->get();
+      foreach($items as $item) {
+          $schedule[$item->day][$item->start_time][]=new \App\Http\Resources\api\ScheduleResource($item);
+      }
+      return [
+          'status' => 'OK',
+          'component' => 'schedule',
+          'content' => $schedule
+      ];
+    }
+
+
     public function getTeacher() {
         $course = $this->course;
         if ($course->lecture_teacher_id && ($this->subject_type=='lecture' || (is_null($course->lab_teacher_id) && is_null($course->practice_teacher_id)))) {
