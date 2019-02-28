@@ -18,18 +18,18 @@
                 <div class="col-sm-12">
                     <h4>Today</h4>
                 </div>
-                <div class="col-sm-12">
-                    <div v-for="(item, key) in schedule">
+                <div class="col-sm-12" v-for="ss in schedule">
+                    <div v-for="(item, key) in ss">
                         <div class="d-inline-block d-color-black">
-                            <div class="d-block">{{ item[0].time.start_time }}</div>
-                            <div class="d-block">{{ item[0].time.end_time }}</div>
+                            <div class="d-block">{{ item.time.start_time }}</div>
+                            <div class="d-block">{{ item.time.end_time }}</div>
                         </div>
-                        <div :class="['schedule-box', 'd-inline-block', {'current-lesson': item[0].time.current, 'next-lesson': item[0].time.next}]">
+                        <div :class="['schedule-box', 'd-inline-block', {'current-lesson': item.time.current, 'next-lesson': item.time.next}]">
                             <div class="d-flex justify-content-between">
-                                <span class="course-name-2 d-color-black">{{ item[0].course.name }}</span>
-                                <span>{{ item[0].subject_type }}</span>
+                                <span class="course-name-2 d-color-black">{{ item.course.name }}</span>
+                                <span>{{ item.subject_type }}</span>
                             </div>
-                            <div class="d-block">{{ item[0].course.group.name }}</div>
+                            <div class="d-block">{{ item.course.group.name }}</div>
                         </div>
                     </div>
                 </div>
